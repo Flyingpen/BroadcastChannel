@@ -1,0 +1,25 @@
+# EdgeOne Pages 配置文件
+# 用于部署 Astro 项目，统一 Node.js 与 pnpm 版本，避免锁文件不兼容问题
+
+build:
+  # ✅ 使用稳定的 Node.js LTS 20
+  nodeVersion: 20
+
+  # ✅ 指定 pnpm 版本（和本地保持一致）
+  packageManager: pnpm@9.9.0
+
+  # ✅ 安装依赖时使用 pnpm，并允许根据 lockfile 自动解析
+  # 如果锁文件版本不兼容，可以换成 --no-frozen-lockfile
+  installCommand: pnpm install --frozen-lockfile
+
+  # ✅ Astro 的构建命令
+  buildCommand: pnpm run build
+
+  # ✅ Astro 默认输出目录
+  outputDir: dist
+
+# 可选：缓存依赖，加快构建速度
+cache:
+  paths:
+    - node_modules
+    - pnpm-lock.yaml
