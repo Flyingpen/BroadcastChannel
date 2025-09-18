@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "postinstall": "test -d .git && simple-git-hooks || true"
-  },
+  }
   "dependencies": {
     "@astrojs/rss": "^4.0.7",
     "@sentry/astro": "^8.27.0",
@@ -25,7 +25,7 @@
     "prismjs": "^1.29.0",
     "prismjs-components-importer": "^0.2.0",
     "sanitize-html": "^2.13.0"
-  },
+  }
   "devDependencies": {
     "@antfu/eslint-config": "^3.0.0",
     "@astrojs/cloudflare": "^11.0.4",
@@ -46,13 +46,13 @@
     "prettier-plugin-astro": "^0.14.1",
     "simple-git-hooks": "^2.11.1",
     "std-env": "^3.7.0"
-  }，
+  }
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
-  }，
+  }
   "lint-staged": {
     "*": "eslint --fix"
-  }，
+  }
   "browserslist": [
     "defaults"
   ]
