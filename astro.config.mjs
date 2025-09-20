@@ -12,7 +12,16 @@ const providers = {
     isr: false,
     edgeMiddleware: false,
   }),
-  cloudflare_pages: cloudflare(),
+  cloudflare_pages: cloudflare({
+    platformProxy: {
+      enabled: true,
+    },
+  }),
+  edgeone: cloudflare({
+    platformProxy: {
+      enabled: true,
+    },
+  }),
   netlify: netlify({
     cacheOnDemandPages: false,
     edgeMiddleware: false,
@@ -50,7 +59,7 @@ export default defineConfig({
     ssr: {
       noExternal: process.env.DOCKER ? !!process.env.DOCKER : undefined,
       external: [
-        ...adapterProvider === 'cloudflare_pages'
+        ...(adapterProvider === 'cloudflare_pages' || adapterProvider === 'edgeone')
           ? [
               'module',
               'url',
@@ -84,6 +93,10 @@ export default defineConfig({
             ]
           : [],
       ],
+    },
+    define: {
+      // 确保Edge Runtime兼容性
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
     },
   },
 })

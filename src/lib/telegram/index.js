@@ -7,7 +7,7 @@ import { getEnv } from '../env'
 
 const cache = new LRUCache({
   ttl: 1000 * 60 * 5, // 5 minutes
-  maxSize: 50 * 1024 * 1024, // 50MB
+  maxSize: 10 * 1024 * 1024, // 10MB (减少内存使用以适应Edge Runtime)
   sizeCalculation: (item) => {
     return JSON.stringify(item).length
   },
