@@ -9,86 +9,219 @@ import sunIcon from '../assets/sun.svg'
 </button>
 
 <script is:inline>
-  function initTheme() {
-    const button = document.getElementById('theme-toggle')
-    const sunIcon = document.getElementById('theme-icon-sun')
-    const moonIcon = document.getElementById('theme-icon-moon')
+  ;(function () {
+    'use strict'
 
-    if (!button || !sunIcon || !moonIcon) {
-      console.error('Theme toggle elements not found')
-      return
+    /**
+     * @typedef {'light' | 'dark'} Theme
+     */
+
+    /**
+     * @typedef {object} ThemeToggleElements
+     * @property {HTMLButtonElement} button
+     * @property {HTMLImageElement} sunIcon
+     * @property {HTMLImageElement} moonIcon
+     */
+
+    class ThemeManager {
+      constructor() {
+        /** @type {ThemeToggleElements | null} */
+        this.elements = null
+        /** @type {boolean} */
+        this.initialized = false
+      }
+
+      /**
+       * @returns {ThemeToggleElements | null}
+       */
+      getElements() {
+        const button = /** @type {HTMLButtonElement} */ (document.getElementById('theme-toggle'))
+        const sunIcon = /** @type {HTMLImageElement} */ (document.getElementById('theme-icon-sun'))
+        const moonIcon = /** @type {HTMLImageElement} */ (document.getElementById('theme-icon-moon'))
+
+        if (!button || !sunIcon || !moonIcon) {
+          console.error('ThemeToggle: Required elements not found', {
+            button: !!button,
+            sunIcon: !!sunIcon,
+            moonIcon: !!moonIcon,
+          })
+          return null
+        }
+
+        return { button, sunIcon, moonIcon }
+      }
+
+      /**
+       * @returns {Theme}
+       */
+      getCurrentTheme() {
+        const hasTheme = document.documentElement.hasAttribute('data-theme')
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+        return hasTheme && isDark ? 'dark' : 'light'
+      }
+
+      /**
+       * @param {Theme} theme
+       */
+      setTheme(theme) {
+        if (theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark')
+        } else {
+          document.documentElement.removeAttribute('data-theme')
+        }
+      }
+
+      /**
+       * @param {Theme} theme
+       */
+      updateIcons(theme) {
+        if (!this.elements) {
+          return
+        }
+
+        const { sunIcon, moonIcon } = this.elements
+
+        if (theme === 'dark') {
+          sunIcon.classList.remove('active')
+          moonIcon.classList.add('active')
+        } else {
+          sunIcon.classList.add('active')
+          moonIcon.classList.remove('active')
+        }
+      }
+
+      toggleTheme() {
+        const currentTheme = this.getCurrentTheme()
+        /** @type {Theme} */
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+
+        console.info('ThemeToggle: Toggling theme', { from: currentTheme, to: newTheme })
+
+        this.setTheme(newTheme)
+        this.updateIcons(newTheme)
+
+        try {
+          localStorage.setItem('theme', newTheme)
+        } catch (e) {
+          console.warn('ThemeToggle: Could not save theme to localStorage', e)
+        }
+      }
+
+      initializeTheme() {
+        /** @type {Theme | null} */
+        let savedTheme = null
+
+        try {
+          savedTheme = /** @type {Theme} */ (localStorage.getItem('theme'))
+        } catch (e) {
+          console.warn('ThemeToggle: Could not read from localStorage', e)
+        }
+
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        /** @type {Theme} */
+        const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light')
+
+        console.info('ThemeToggle: Initializing theme', {
+          savedTheme,
+          systemPrefersDark,
+          initialTheme,
+        })
+
+        this.setTheme(initialTheme)
+        this.updateIcons(initialTheme)
+      }
+
+      setupEventListeners() {
+        if (!this.elements) {
+          return
+        }
+
+        // 主题切换按钮事件
+        this.elements.button.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          this.toggleTheme()
+        })
+
+        // 系统主题变化监听
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        /**
+         * @param {MediaQueryListEvent} e
+         */
+        const handleSystemThemeChange = (e) => {
+          try {
+            if (!localStorage.getItem('theme')) {
+              /** @type {Theme} */
+              const newTheme = e.matches ? 'dark' : 'light'
+              this.setTheme(newTheme)
+              this.updateIcons(newTheme)
+            }
+          } catch (err) {
+            console.warn('ThemeToggle: Error handling system theme change', err)
+          }
+        }
+
+        if (mediaQuery.addEventListener) {
+          mediaQuery.addEventListener('change', handleSystemThemeChange)
+        } else {
+          // Fallback for older browsers
+          mediaQuery.addListener(handleSystemThemeChange)
+        }
+      }
+
+      init() {
+        if (this.initialized) {
+          console.info('ThemeToggle: Already initialized, skipping')
+          return
+        }
+
+        console.info('ThemeToggle: Initializing...')
+
+        this.elements = this.getElements()
+        if (!this.elements) {
+          console.error('ThemeToggle: Failed to get required elements')
+          return
+        }
+
+        this.initializeTheme()
+        this.setupEventListeners()
+        this.initialized = true
+
+        console.info('ThemeToggle: Initialization complete')
+      }
     }
 
-    // 获取当前主题
-    function getCurrentTheme() {
-      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-    }
+    // 创建全局实例
+    const themeManager = new ThemeManager()
 
-    // 设置主题
-    function setTheme(theme) {
-      if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark')
+    // 多种初始化方式确保可靠性
+    function attemptInit() {
+      if (document.getElementById('theme-toggle')) {
+        themeManager.init()
       } else {
-        document.documentElement.removeAttribute('data-theme')
+        console.info('ThemeToggle: Elements not ready, will retry')
+        setTimeout(attemptInit, 50)
       }
     }
 
-    // 更新图标
-    function updateIcon(theme) {
-      if (theme === 'dark') {
-        sunIcon.classList.remove('active')
-        moonIcon.classList.add('active')
-      } else {
-        sunIcon.classList.add('active')
-        moonIcon.classList.remove('active')
-      }
+    // 立即尝试初始化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attemptInit)
+    } else {
+      attemptInit()
     }
 
-    // 切换主题
-    function toggleTheme() {
-      const currentTheme = getCurrentTheme()
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
-
-      setTheme(newTheme)
-      updateIcon(newTheme)
-      localStorage.setItem('theme', newTheme)
-    }
-
-    // 初始化主题
-    function initializeTheme() {
-      const savedTheme = localStorage.getItem('theme')
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light')
-
-      setTheme(initialTheme)
-      updateIcon(initialTheme)
-    }
-
-    // 绑定事件
-    button.addEventListener('click', toggleTheme)
-
-    // 监听系统主题变化
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem('theme')) {
-        const newTheme = e.matches ? 'dark' : 'light'
-        setTheme(newTheme)
-        updateIcon(newTheme)
-      }
+    // Astro 页面转换支持
+    document.addEventListener('astro:page-load', () => {
+      console.info('ThemeToggle: Astro page load detected')
+      setTimeout(attemptInit, 10)
     })
 
-    // 初始化
-    initializeTheme()
-  }
-
-  // 初始化主题切换
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTheme)
-  } else {
-    initTheme()
-  }
-
-  // 处理 Astro 页面转换
-  document.addEventListener('astro:page-load', initTheme)
+    // 全局作用域暴露，供调试使用
+    if (typeof window !== 'undefined') {
+      /** @type {any} */ window.themeManager = themeManager
+    }
+  })()
 </script>
 
 <style>

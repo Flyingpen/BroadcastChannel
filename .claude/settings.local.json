@@ -12,7 +12,10 @@
       "Bash(cp:*)",
       "Bash(set)",
       "Bash(GITHUB_PAGES=true pnpm run build)",
-      "Bash(npx serve:*)"
+      "Bash(npx serve:*)",
+      "Bash(GITHUB_PAGES=true CHANNEL=RantGroup pnpm run build)",
+      "Bash(GITHUB_PAGES=true CHANNEL=RantGroup node scripts/github-pages-build.js)",
+      "Bash(lsof:*)"
     ],
     "deny": [],
     "ask": []
