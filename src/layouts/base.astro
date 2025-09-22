@@ -186,6 +186,13 @@ const finalUIText = { ...defaultUIText, ...uiText }
                 Sepia
               </a>
             </div>
+            {
+              FOOTER_INJECT && (
+                <div class="footer-inject-wrap">
+                  <Fragment set:html={FOOTER_INJECT} />
+                </div>
+              )
+            }
           </slot>
         </div>
       </div>
@@ -193,7 +200,6 @@ const finalUIText = { ...defaultUIText, ...uiText }
     <a href="#wrapper" id="back-to-top" aria-label="Back to top">
       <img {...backToTopIcon} alt="Back to Top" />
     </a>
-    <Fragment set:html={FOOTER_INJECT} />
     {customJS && <script is:inline set:html={customJS} />}
   </body>
 </html>
