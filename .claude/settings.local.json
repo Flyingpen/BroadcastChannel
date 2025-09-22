@@ -3,7 +3,10 @@
     "allow": [
       "Bash(pnpm:*)",
       "WebSearch",
-      "WebFetch(domain:docs.astro.build)"
+      "WebFetch(domain:docs.astro.build)",
+      "Bash(ASTRO_CONFIG_MODE=static CHANNEL=miantiao_me pnpm build)",
+      "Bash(GITHUB_PAGES=true CHANNEL=miantiao_me node scripts/github-pages-build.js)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

@@ -23,11 +23,12 @@ const providers = {
 }
 
 const adapterProvider = process.env.SERVER_ADAPTER || provider
+const isGitHubPages = process.env.GITHUB_PAGES === 'true'
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
-  adapter: providers[adapterProvider] || providers.node,
+  output: isGitHubPages ? 'static' : 'server',
+  adapter: isGitHubPages ? undefined : (providers[adapterProvider] || providers.node),
   integrations: [
     ...(process.env.SENTRY_DSN
       ? [
