@@ -9,6 +9,7 @@ import discord from '../assets/discord.svg'
 import telegram from '../assets/telegram.svg'
 import mastodon from '../assets/mastodon.svg'
 import bluesky from '../assets/bluesky.svg'
+import ThemeToggle from './ThemeToggle.astro'
 
 const { SITE_URL, RSS_URL } = Astro.locals
 const { channel } = Astro.props
@@ -39,6 +40,7 @@ const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
     </a>
   </div>
   <div class="header-icons">
+    <ThemeToggle />
     <a href={RSS_URL} target="_blank" rel="alternate" type="application/rss+xml" title="RSS Feed">
       <img {...rss} alt="RSS" class="social-icon" width="1em" />
     </a>

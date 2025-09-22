@@ -1,0 +1,127 @@
+---
+import moonIcon from '../assets/moon.svg'
+import sunIcon from '../assets/sun.svg'
+---
+
+<button id="theme-toggle" class="theme-toggle" aria-label="切换主题" title="切换主题">
+  <img id="theme-icon-sun" src={sunIcon.src} alt="明亮模式" class="theme-icon" />
+  <img id="theme-icon-moon" src={moonIcon.src} alt="暗色模式" class="theme-icon" />
+</button>
+
+<script>
+  // 主题切换逻辑
+  class ThemeToggle {
+    constructor() {
+      this.button = document.getElementById('theme-toggle')
+      this.sunIcon = document.getElementById('theme-icon-sun')
+      this.moonIcon = document.getElementById('theme-icon-moon')
+
+      this.init()
+    }
+
+    init() {
+      // 从localStorage获取保存的主题，或根据系统偏好设置默认主题
+      const savedTheme = localStorage.getItem('theme')
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+      const currentTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light')
+
+      this.setTheme(currentTheme)
+      this.updateIcon(currentTheme)
+
+      // 绑定点击事件
+      this.button?.addEventListener('click', () => this.toggleTheme())
+
+      // 监听系统主题变化
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+          const newTheme = e.matches ? 'dark' : 'light'
+          this.setTheme(newTheme)
+          this.updateIcon(newTheme)
+        }
+      })
+    }
+
+    setTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark')
+      } else {
+        document.documentElement.removeAttribute('data-theme')
+      }
+    }
+
+    updateIcon(theme) {
+      if (theme === 'dark') {
+        this.sunIcon?.classList.remove('active')
+        this.moonIcon?.classList.add('active')
+      } else {
+        this.sunIcon?.classList.add('active')
+        this.moonIcon?.classList.remove('active')
+      }
+    }
+
+    toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme')
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+
+      this.setTheme(newTheme)
+      this.updateIcon(newTheme)
+      localStorage.setItem('theme', newTheme)
+    }
+  }
+
+  // 初始化主题切换
+  document.addEventListener('DOMContentLoaded', () => {
+    // eslint-disable-next-line no-new
+    new ThemeToggle()
+  })
+
+  // 处理 Astro 页面转换
+  document.addEventListener('astro:page-load', () => {
+    // eslint-disable-next-line no-new
+    new ThemeToggle()
+  })
+</script>
+
+<style>
+  .theme-toggle {
+    position: relative;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-toggle:hover {
+    background-color: var(--code-background-color);
+  }
+
+  .theme-icon {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+    opacity: 0;
+    transform: scale(0.8);
+    filter: var(--icon-secondary-filter);
+  }
+
+  .theme-icon.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* 确保图标在不同主题下都能正确显示 */
+  [data-theme='dark'] .theme-icon {
+    filter: invert(1) var(--icon-secondary-filter);
+  }
+</style>

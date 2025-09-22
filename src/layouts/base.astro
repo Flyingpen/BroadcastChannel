@@ -3,36 +3,40 @@ import '../assets/normalize.css'
 import '../assets/style.css'
 import '../assets/global.css'
 import { SEO } from 'astro-seo'
-import { getEnv } from '../lib/env'
+import { getConfig } from '../lib/config'
 import backToTopIcon from '../assets/back-to-top.svg'
 
 const { SITE_URL, RSS_URL, RSS_PREFIX } = Astro.locals
 const { channel } = Astro.props
 
-const locale = getEnv(import.meta.env, Astro, 'LOCALE')
+// 使用配置系统获取值
+const locale = getConfig(import.meta.env, Astro, 'LOCALE', 'en')
+const themeColor = getConfig(import.meta.env, Astro, 'THEME_COLOR', '#f4f1ec')
+const customCSS = getConfig(import.meta.env, Astro, 'CUSTOM_CSS', '')
+const customJS = getConfig(import.meta.env, Astro, 'CUSTOM_JS', '')
 
 const seo = channel?.seo
 const reqPathname = Astro.url.pathname.replace(/\/$/, '')
 const canonical = SITE_URL.startsWith('http') ? new URL(SITE_URL).origin + reqPathname : Astro.url.origin + reqPathname
 
 const { origin, pathname } = new URL(canonical)
-const twitter = getEnv(import.meta.env, Astro, 'TWITTER')
+const twitter = getConfig(import.meta.env, Astro, 'TWITTER')
 
 const seoParams = {
-  title: seo?.title,
-  description: seo?.text ?? channel?.description,
+  title: seo?.title ?? getConfig(import.meta.env, Astro, 'SITE_TITLE'),
+  description: seo?.text ?? channel?.description ?? getConfig(import.meta.env, Astro, 'SITE_DESCRIPTION'),
   canonical,
-  noindex: seo?.noindex ?? getEnv(import.meta.env, Astro, 'NOINDEX'),
-  nofollow: seo?.nofollow ?? getEnv(import.meta.env, Astro, 'NOFOLLOW'),
+  noindex: seo?.noindex ?? getConfig(import.meta.env, Astro, 'NO_INDEX', false),
+  nofollow: seo?.nofollow ?? getConfig(import.meta.env, Astro, 'NO_FOLLOW', false),
   openGraph: {
     basic: {
       type: 'website',
-      title: channel?.title ?? '',
+      title: channel?.title ?? getConfig(import.meta.env, Astro, 'SITE_TITLE', ''),
       url: canonical,
       image: channel?.avatar ? channel.avatar : origin + '/favicon.ico',
     },
     optional: {
-      description: seo?.text ?? channel?.description,
+      description: seo?.text ?? channel?.description ?? getConfig(import.meta.env, Astro, 'SITE_DESCRIPTION'),
       locale,
     },
   },
@@ -48,23 +52,44 @@ const seoParams = {
   },
 }
 
-const GOOGLE_SEARCH_SITE = getEnv(import.meta.env, Astro, 'GOOGLE_SEARCH_SITE')
+const GOOGLE_SEARCH_SITE = getConfig(import.meta.env, Astro, 'GOOGLE_SEARCH_SITE')
 const searchAction = GOOGLE_SEARCH_SITE ? 'https://www.google.com/search' : '/search/result'
 
-const HEADER_INJECT = getEnv(import.meta.env, Astro, 'HEADER_INJECT')
-const FOOTER_INJECT = getEnv(import.meta.env, Astro, 'FOOTER_INJECT')
-const TAGS = getEnv(import.meta.env, Astro, 'TAGS')
-const LINKS = getEnv(import.meta.env, Astro, 'LINKS')
-const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
+const HEADER_INJECT = getConfig(import.meta.env, Astro, 'HEADER_INJECT', '')
+const FOOTER_INJECT = getConfig(import.meta.env, Astro, 'FOOTER_INJECT', '')
+const TAGS = getConfig(import.meta.env, Astro, 'TAGS')
+const LINKS = getConfig(import.meta.env, Astro, 'LINKS')
+const navs = (getConfig(import.meta.env, Astro, 'NAVS') || '')
   .split(';')
   .filter(Boolean)
   .map((link) => {
     link = link.split(',')
     return {
-      title: link[0],
-      href: link[1],
+      title: link[0]?.trim(),
+      href: link[1]?.trim(),
     }
   })
+
+// 解析 UI 文本配置
+const uiTextConfig = getConfig(import.meta.env, Astro, 'UI_TEXT', '{}')
+let uiText = {}
+try {
+  uiText = typeof uiTextConfig === 'string' ? JSON.parse(uiTextConfig) : uiTextConfig
+} catch {
+  uiText = {}
+}
+
+// 默认 UI 文本
+const defaultUIText = {
+  home: 'Home',
+  tags: 'Tags',
+  links: 'Links',
+  search: 'Search',
+  poweredBy: 'Powered by',
+}
+
+// 合并 UI 文本
+const finalUIText = { ...defaultUIText, ...uiText }
 ---
 
 <!doctype html>
@@ -72,13 +97,14 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#f4f1ec" />
+    <meta name="theme-color" content={themeColor} />
     <link rel="alternate" type="application/rss+xml" title={`${RSS_PREFIX}${channel?.title}`} href={RSS_URL} />
     <style is:inline>
       @view-transition {
         navigation: auto; /* enabled */
       }
     </style>
+    {customCSS && <style is:inline set:html={customCSS} />}
     <SEO
       titleTemplate={`%s | ${channel?.title}`}
       titleDefault={[channel?.title, seoParams.description].filter(Boolean).join(' - ')}
@@ -102,7 +128,7 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
             <div class="nav">
               <div class="nav-item">
                 <a href={SITE_URL} title={channel?.title} class={`nav-link ${pathname === '/' ? 'current' : ''}`}>
-                  Home
+                  {finalUIText.home}
                 </a>
               </div>
               {
@@ -110,10 +136,10 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
                   <div class="nav-item">
                     <a
                       href={`${SITE_URL}tags`}
-                      title="Tags"
+                      title={finalUIText.tags}
                       class={`nav-link ${pathname === '/tags' ? 'current' : ''}`}
                     >
-                      Tags
+                      {finalUIText.tags}
                     </a>
                   </div>
                 ) : null
@@ -123,10 +149,10 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
                   <div class="nav-item">
                     <a
                       href={`${SITE_URL}links`}
-                      title="Links"
+                      title={finalUIText.links}
                       class={`nav-link ${pathname === '/links' ? 'current' : ''}`}
                     >
-                      Links
+                      {finalUIText.links}
                     </a>
                   </div>
                 ) : null
@@ -141,13 +167,13 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
                 ))
               }
             </div>
-            <input class="search-icon" name="icon" type="checkbox" placeholder="Search" />
+            <input class="search-icon" name="icon" type="checkbox" placeholder={finalUIText.search} />
             <form class="search-form" action={searchAction} method="get">
               {GOOGLE_SEARCH_SITE ? <input type="hidden" name="as_sitesearch" value={GOOGLE_SEARCH_SITE} /> : null}
-              <input type="text" name="q" placeholder="Search" />
+              <input type="text" name="q" placeholder={finalUIText.search} />
             </form>
             <div class="copyright-wrap">
-              Powered by
+              {finalUIText.poweredBy}
               <a
                 href="https://github.com/ccbikai/BroadcastChannel"
                 title="BroadcastChannel"
@@ -168,5 +194,6 @@ const navs = (getEnv(import.meta.env, Astro, 'NAVS') || '')
       <img {...backToTopIcon} alt="Back to Top" />
     </a>
     <Fragment set:html={FOOTER_INJECT} />
+    {customJS && <script is:inline set:html={customJS} />}
   </body>
 </html>

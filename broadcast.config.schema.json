@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BroadcastChannel Configuration",
+  "description": "Configuration schema for BroadcastChannel project",
+  "type": "object",
+  "properties": {
+    "CHANNEL": {
+      "type": "string",
+      "description": "Telegram 频道用户名（必需）",
+      "pattern": "^[a-zA-Z0-9_]+$"
+    },
+    "LOCALE": {
+      "type": "string",
+      "description": "语言设置",
+      "default": "en",
+      "examples": ["en", "zh-CN", "zh-TW", "ja", "ko"]
+    },
+    "TIMEZONE": {
+      "type": "string",
+      "description": "时区设置",
+      "default": "UTC",
+      "examples": ["UTC", "Asia/Shanghai", "America/New_York", "Europe/London"]
+    },
+    "SITE_TITLE": {
+      "type": "string",
+      "description": "网站标题（如果不设置，使用频道标题）"
+    },
+    "SITE_DESCRIPTION": {
+      "type": "string",
+      "description": "网站描述（如果不设置，使用频道描述）"
+    },
+    "SITE_URL": {
+      "type": "string",
+      "description": "网站 URL",
+      "format": "uri"
+    },
+    "TELEGRAM": {
+      "type": "string",
+      "description": "Telegram 用户名"
+    },
+    "TWITTER": {
+      "type": "string",
+      "description": "Twitter 用户名"
+    },
+    "GITHUB": {
+      "type": "string",
+      "description": "GitHub 用户名"
+    },
+    "MASTODON": {
+      "type": "string",
+      "description": "Mastodon 地址（格式：mastodon.social/@username）"
+    },
+    "BLUESKY": {
+      "type": "string",
+      "description": "BlueSky 地址"
+    },
+    "DISCORD": {
+      "type": "string",
+      "description": "Discord 邀请链接",
+      "format": "uri"
+    },
+    "PODCAST": {
+      "type": "string",
+      "description": "播客链接",
+      "format": "uri"
+    },
+    "COMMENTS": {
+      "type": "boolean",
+      "description": "显示评论",
+      "default": false
+    },
+    "RSS_BEAUTIFY": {
+      "type": "boolean",
+      "description": "RSS 美化",
+      "default": true
+    },
+    "GOOGLE_SEARCH_SITE": {
+      "type": "string",
+      "description": "谷歌站内搜索域名"
+    },
+    "NO_FOLLOW": {
+      "type": "boolean",
+      "description": "nofollow 设置",
+      "default": false
+    },
+    "NO_INDEX": {
+      "type": "boolean",
+      "description": "noindex 设置",
+      "default": false
+    },
+    "THEME_COLOR": {
+      "type": "string",
+      "description": "主题色",
+      "default": "#f4f1ec",
+      "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+    },
+    "HEADER_INJECT": {
+      "type": "string",
+      "description": "头部注入代码（HTML）"
+    },
+    "FOOTER_INJECT": {
+      "type": "string",
+      "description": "底部注入代码（HTML）"
+    },
+    "TAGS": {
+      "type": "string",
+      "description": "标签列表（逗号分隔）"
+    },
+    "LINKS": {
+      "type": "string",
+      "description": "友链列表（格式：标题1,链接1;标题2,链接2）"
+    },
+    "NAVS": {
+      "type": "string",
+      "description": "导航栏链接（格式：标题1,链接1;标题2,链接2）"
+    },
+    "HOST": {
+      "type": "string",
+      "description": "Telegram 主机名",
+      "default": "telegram.dog"
+    },
+    "STATIC_PROXY": {
+      "type": "string",
+      "description": "静态资源代理路径",
+      "default": "/static/"
+    },
+    "SENTRY_DSN": {
+      "type": "string",
+      "description": "Sentry 错误监控 DSN"
+    },
+    "SENTRY_AUTH_TOKEN": {
+      "type": "string",
+      "description": "Sentry 认证令牌"
+    },
+    "SENTRY_PROJECT": {
+      "type": "string",
+      "description": "Sentry 项目名"
+    },
+    "CUSTOM_CSS": {
+      "type": "string",
+      "description": "自定义 CSS"
+    },
+    "CUSTOM_JS": {
+      "type": "string",
+      "description": "自定义 JavaScript"
+    },
+    "CACHE_TTL": {
+      "type": "number",
+      "description": "缓存时间（秒）",
+      "default": 300,
+      "minimum": 0
+    },
+    "BLOCKED_WORDS": {
+      "type": "string",
+      "description": "屏蔽词列表（逗号分隔）"
+    },
+    "MIN_CONTENT_LENGTH": {
+      "type": "number",
+      "description": "最小内容长度",
+      "default": 10,
+      "minimum": 0
+    },
+    "UI_TEXT": {
+      "type": "object",
+      "description": "UI 文本自定义",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["CHANNEL"],
+  "additionalProperties": false
+}
