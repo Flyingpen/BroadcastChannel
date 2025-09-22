@@ -11,7 +11,8 @@
       "Bash(git commit:*)",
       "Bash(cp:*)",
       "Bash(set)",
-      "Bash(GITHUB_PAGES=true pnpm run build)"
+      "Bash(GITHUB_PAGES=true pnpm run build)",
+      "Bash(npx serve:*)"
     ],
     "deny": [],
     "ask": []

@@ -12,9 +12,9 @@ import sunIcon from '../assets/sun.svg'
   // 主题切换逻辑
   class ThemeToggle {
     constructor() {
-      this.button = document.getElementById('theme-toggle')
-      this.sunIcon = document.getElementById('theme-icon-sun')
-      this.moonIcon = document.getElementById('theme-icon-moon')
+      this.button = document.querySelector('#theme-toggle, [id*="theme-toggle"]')
+      this.sunIcon = document.querySelector('#theme-icon-sun, [id*="theme-icon-sun"]')
+      this.moonIcon = document.querySelector('#theme-icon-moon, [id*="theme-icon-moon"]')
 
       this.init()
     }
