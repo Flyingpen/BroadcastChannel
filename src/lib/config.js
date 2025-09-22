@@ -38,7 +38,7 @@ const DEFAULT_CONFIG = {
   // 🎨 主题和样式
   THEME_COLOR: '#f4f1ec', // 主题色
   HEADER_INJECT: '', // 头部注入代码
-  FOOTER_INJECT: '<a href="https://icp.gov.moe/?keyword=20259982" target="_blank">萌ICP备20259982号</a>', // 底部注入代码
+  FOOTER_INJECT: '', // 底部注入代码
 
   // 📑 导航和页面
   TAGS: '技术,生活,随想', // 标签列表（逗号分隔）
