@@ -15,12 +15,12 @@ const DEFAULT_CONFIG = {
   // 🏠 网站信息
   SITE_TITLE: '我的微博客', // 网站标题
   SITE_DESCRIPTION: '基于 Telegram 频道的个人微博客', // 网站描述
-  SITE_URL: 'https://23.911016.xyz', // 网站 URL
+  SITE_URL: 'https://123.911016.xyz', // 网站 URL
 
   // 🔗 社交媒体链接
-  TELEGRAM: '', // Telegram 用户名
+  TELEGRAM: 'https://t.me/s8jackeylove', // Telegram 用户名
   TWITTER: '', // Twitter 用户名
-  GITHUB: '', // GitHub 用户名
+  GITHUB: 'https://github.com/Flyingpen', // GitHub 用户名
   MASTODON: '', // Mastodon 地址
   BLUESKY: '', // BlueSky 地址
   DISCORD: '', // Discord 邀请链接
