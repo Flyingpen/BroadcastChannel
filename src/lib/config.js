@@ -15,7 +15,7 @@ const DEFAULT_CONFIG = {
   // 🏠 网站信息
   SITE_TITLE: '我的微博客', // 网站标题
   SITE_DESCRIPTION: '基于 Telegram 频道的个人微博客', // 网站描述
-  SITE_URL: '', // 网站 URL
+  SITE_URL: 'https://23.911016.xyz', // 网站 URL
 
   // 🔗 社交媒体链接
   TELEGRAM: '', // Telegram 用户名
@@ -27,7 +27,7 @@ const DEFAULT_CONFIG = {
   PODCAST: '', // 播客链接
 
   // 📑 功能开关
-  COMMENTS: false, // 显示评论
+  COMMENTS: true, // 显示评论
   RSS_BEAUTIFY: true, // RSS 美化
   GOOGLE_SEARCH_SITE: '', // 谷歌站内搜索域名
 
@@ -38,7 +38,7 @@ const DEFAULT_CONFIG = {
   // 🎨 主题和样式
   THEME_COLOR: '#f4f1ec', // 主题色
   HEADER_INJECT: '', // 头部注入代码
-  FOOTER_INJECT: '', // 底部注入代码
+  FOOTER_INJECT: '<a href="https://icp.gov.moe/?keyword=20259982" target="_blank">萌ICP备20259982号</a>', // 底部注入代码
 
   // 📑 导航和页面
   TAGS: '技术,生活,随想', // 标签列表（逗号分隔）
