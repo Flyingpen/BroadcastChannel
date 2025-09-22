@@ -1,5 +1,5 @@
 ---
-import { getEnv } from '../lib/env'
+import { getConfig } from '../lib/config'
 import voidFile from '../assets/void.png'
 import rss from '../assets/rss.svg'
 import podcast from '../assets/podcast.svg'
@@ -14,15 +14,15 @@ import ThemeToggle from './ThemeToggle.astro'
 const { SITE_URL, RSS_URL } = Astro.locals
 const { channel } = Astro.props
 
-const PODCASRT = getEnv(import.meta.env, Astro, 'PODCASRT')
-const TWITTER = getEnv(import.meta.env, Astro, 'TWITTER')
-const GITHUB = getEnv(import.meta.env, Astro, 'GITHUB')
-const TELEGRAM = getEnv(import.meta.env, Astro, 'TELEGRAM')
-const DISCORD = getEnv(import.meta.env, Astro, 'DISCORD')
-const MASTODON = getEnv(import.meta.env, Astro, 'MASTODON')
-const BLUESKY = getEnv(import.meta.env, Astro, 'BLUESKY')
+const PODCAST = getConfig(import.meta.env, Astro, 'PODCAST')
+const TWITTER = getConfig(import.meta.env, Astro, 'TWITTER')
+const GITHUB = getConfig(import.meta.env, Astro, 'GITHUB')
+const TELEGRAM = getConfig(import.meta.env, Astro, 'TELEGRAM')
+const DISCORD = getConfig(import.meta.env, Astro, 'DISCORD')
+const MASTODON = getConfig(import.meta.env, Astro, 'MASTODON')
+const BLUESKY = getConfig(import.meta.env, Astro, 'BLUESKY')
 
-const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
+const staticProxy = getConfig(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
 ---
 
 <div id="header">
@@ -46,8 +46,8 @@ const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
     </a>
 
     {
-      PODCASRT && (
-        <a href={PODCASRT} target="_blank" title="Podcast">
+      PODCAST && (
+        <a href={PODCAST} target="_blank" title="Podcast">
           <img {...podcast} alt="Podcast" class="social-icon" width="1em" />
         </a>
       )

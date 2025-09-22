@@ -5,68 +5,74 @@ import { getEnv } from './env.js'
  * 优先级：JSON 配置 > 环境变量 > 默认值
  */
 
-// 默认配置
+// 默认配置 - 从 broadcast.config.jsonc 合并
 const DEFAULT_CONFIG = {
-  // 基础配置
-  CHANNEL: '', // Telegram 频道用户名（必需）
-  LOCALE: 'en', // 语言设置
-  TIMEZONE: 'UTC', // 时区设置
+  // 📺 基础配置
+  CHANNEL: 'RantGroup', // Telegram 频道用户名（必需）
+  LOCALE: 'zh-CN', // 语言设置
+  TIMEZONE: 'Asia/Shanghai', // 时区设置
 
-  // 网站信息
-  SITE_TITLE: '', // 网站标题（如果不设置，使用频道标题）
-  SITE_DESCRIPTION: '', // 网站描述（如果不设置，使用频道描述）
+  // 🏠 网站信息
+  SITE_TITLE: '我的微博客', // 网站标题
+  SITE_DESCRIPTION: '基于 Telegram 频道的个人微博客', // 网站描述
   SITE_URL: '', // 网站 URL
 
-  // 社交媒体链接
+  // 🔗 社交媒体链接
   TELEGRAM: '', // Telegram 用户名
   TWITTER: '', // Twitter 用户名
   GITHUB: '', // GitHub 用户名
-  MASTODON: '', // Mastodon 地址（格式：mastodon.social/@username）
+  MASTODON: '', // Mastodon 地址
   BLUESKY: '', // BlueSky 地址
   DISCORD: '', // Discord 邀请链接
   PODCAST: '', // 播客链接
 
-  // 功能开关
+  // 📑 功能开关
   COMMENTS: false, // 显示评论
   RSS_BEAUTIFY: true, // RSS 美化
   GOOGLE_SEARCH_SITE: '', // 谷歌站内搜索域名
 
-  // SEO 配置
+  // 🛡️ SEO 配置
   NO_FOLLOW: false, // nofollow 设置
   NO_INDEX: false, // noindex 设置
 
-  // 主题和样式
+  // 🎨 主题和样式
   THEME_COLOR: '#f4f1ec', // 主题色
   HEADER_INJECT: '', // 头部注入代码
   FOOTER_INJECT: '', // 底部注入代码
 
-  // 导航和页面
-  TAGS: '', // 标签列表（逗号分隔）
-  LINKS: '', // 友链列表（格式：标题1,链接1;标题2,链接2）
+  // 📑 导航和页面
+  TAGS: '技术,生活,随想', // 标签列表（逗号分隔）
+  LINKS: '友站1,https://example1.com;友站2,https://example2.com', // 友链列表
   NAVS: '', // 导航栏链接（格式：标题1,链接1;标题2,链接2）
 
-  // 高级配置
+  // ⚙️ 高级配置
   HOST: 'telegram.dog', // Telegram 主机名
   STATIC_PROXY: '/static/', // 静态资源代理路径
 
-  // 监控和分析
+  // 📊 监控和分析
   SENTRY_DSN: '', // Sentry 错误监控 DSN
   SENTRY_AUTH_TOKEN: '', // Sentry 认证令牌
   SENTRY_PROJECT: '', // Sentry 项目名
 
-  // 自定义样式
+  // 🎯 自定义样式
   CUSTOM_CSS: '', // 自定义 CSS
   CUSTOM_JS: '', // 自定义 JavaScript
 
-  // 缓存配置
+  // ⚙️ 缓存配置
   CACHE_TTL: 300, // 缓存时间（秒）
 
-  // 内容过滤
+  // 🔍 内容过滤
   BLOCKED_WORDS: '', // 屏蔽词列表（逗号分隔）
   MIN_CONTENT_LENGTH: 10, // 最小内容长度
 
-  // 多语言支持
-  UI_TEXT: '{}', // UI 文本自定义（JSON 格式）
+  // 🌏 多语言支持
+  UI_TEXT: {
+    home: '首页',
+    search: '搜索',
+    tags: '标签',
+    links: '友链',
+    poweredBy: '技术支持',
+  }, // UI 文本自定义
 }
 
 /**
@@ -114,15 +120,15 @@ async function loadConfigFromFile(configPath) {
  * @returns {*} 配置值
  */
 export function getConfig(env, astro, key, defaultValue = null) {
-  // 1. 首先尝试从 JSON 配置文件获取
-  if (astro?.locals?.config && astro.locals.config[key] !== undefined) {
-    return astro.locals.config[key]
-  }
-
-  // 2. 然后从环境变量获取
+  // 1. 首先从环境变量获取（最高优先级）
   const envValue = getEnv(env, astro, key)
   if (envValue !== null) {
     return envValue
+  }
+
+  // 2. 然后尝试从 JSON 配置文件获取
+  if (astro?.locals?.config && astro.locals.config[key] !== undefined) {
+    return astro.locals.config[key]
   }
 
   // 3. 使用提供的默认值

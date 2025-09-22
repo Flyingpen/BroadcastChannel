@@ -36,9 +36,9 @@
   --secondary-color: #aaa;
 }
 
-/* 系统主题检测（自动模式） */
+/* 系统主题检测（自动模式） - 仅在没有JavaScript设置时生效 */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
+  :root:not([data-theme]):not(.js-theme-ready) {
     --background-color: #1a1a1a;
     --foreground-color: #e0e0e0;
     --highlight-color: #ff6b47;

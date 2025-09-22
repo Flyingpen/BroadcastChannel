@@ -15,7 +15,9 @@
       "Bash(npx serve:*)",
       "Bash(GITHUB_PAGES=true CHANNEL=RantGroup pnpm run build)",
       "Bash(GITHUB_PAGES=true CHANNEL=RantGroup node scripts/github-pages-build.js)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(curl -s http://localhost:4323/)",
+      "Bash(npx lint-staged:*)"
     ],
     "deny": [],
     "ask": []

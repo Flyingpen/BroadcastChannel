@@ -97,12 +97,12 @@ TWITTER=ccbikai
 GITHUB=ccbikai
 
 ## 下面两个社交媒体需要为 URL
-DISCORD=https://DISCORD.com
-PODCASRT=https://PODCASRT.com
+DISCORD=
+PODCAST=
 
 ## 头部尾部代码注入，支持 HTML
-FOOTER_INJECT=FOOTER_INJECT
-HEADER_INJECT=HEADER_INJECT
+FOOTER_INJECT=
+HEADER_INJECT=
 
 ## SEO 配置项，可不让搜索引擎索引内容
 NO_FOLLOW=false
