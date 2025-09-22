@@ -9,10 +9,122 @@ import sunIcon from '../assets/sun.svg'
 </button>
 
 <script>
-  import { initThemeManager } from '../lib/theme-manager.ts'
+  // 主题切换 Web Component - 使用 Astro 推荐的方法
+  class ThemeToggle extends HTMLElement {
+    constructor() {
+      super()
+      console.info('ThemeToggle: Web Component created')
+    }
 
-  // 初始化主题管理器
-  initThemeManager()
+    connectedCallback() {
+      console.info('ThemeToggle: Component connected to DOM')
+      this.initializeTheme()
+      this.setupEventListeners()
+    }
+
+    getCurrentTheme() {
+      const attr = document.documentElement.getAttribute('data-theme')
+      return attr === 'dark' ? 'dark' : 'light'
+    }
+
+    setTheme(theme) {
+      console.info('ThemeToggle: Setting theme to', theme)
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark')
+      } else {
+        // 强制设置 light 而不是移除属性，确保覆盖系统偏好
+        document.documentElement.setAttribute('data-theme', 'light')
+      }
+    }
+
+    updateIcons(theme) {
+      console.info('ThemeToggle: Updating icons for theme', theme)
+      const sunIcon = document.getElementById('theme-icon-sun')
+      const moonIcon = document.getElementById('theme-icon-moon')
+
+      if (!sunIcon || !moonIcon) {
+        console.error('ThemeToggle: Icons not found')
+        return
+      }
+
+      if (theme === 'dark') {
+        sunIcon.classList.remove('active')
+        moonIcon.classList.add('active')
+      } else {
+        sunIcon.classList.add('active')
+        moonIcon.classList.remove('active')
+      }
+    }
+
+    initializeTheme() {
+      console.info('ThemeToggle: Initializing theme system')
+
+      let savedTheme = null
+      try {
+        savedTheme = localStorage.getItem('theme')
+      } catch (e) {
+        console.warn('ThemeToggle: Cannot access localStorage', e)
+      }
+
+      // 默认为 light，除非用户明确保存了 dark
+      const initialTheme = savedTheme === 'dark' ? 'dark' : 'light'
+
+      console.info('ThemeToggle: Initial theme setup', {
+        savedTheme,
+        initialTheme,
+      })
+
+      this.setTheme(initialTheme)
+      this.updateIcons(initialTheme)
+    }
+
+    toggleTheme() {
+      const currentTheme = this.getCurrentTheme()
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+
+      console.info('ThemeToggle: Toggling theme', { from: currentTheme, to: newTheme })
+
+      this.setTheme(newTheme)
+      this.updateIcons(newTheme)
+
+      try {
+        localStorage.setItem('theme', newTheme)
+      } catch (e) {
+        console.warn('ThemeToggle: Cannot save to localStorage', e)
+      }
+    }
+
+    setupEventListeners() {
+      const button = document.getElementById('theme-toggle')
+      if (!button) {
+        console.error('ThemeToggle: Button not found')
+        return
+      }
+
+      console.info('ThemeToggle: Setting up event listeners')
+
+      button.addEventListener('click', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        console.info('ThemeToggle: Button clicked!')
+        this.toggleTheme()
+      })
+
+      console.info('ThemeToggle: Setup complete!')
+    }
+  }
+
+  // 注册自定义元素
+  customElements.define('theme-toggle', ThemeToggle)
+
+  // 初始化函数
+  function initThemeToggle() {
+    console.info('ThemeToggle: Creating Web Component instance')
+    void new ThemeToggle()
+  }
+
+  // 立即初始化
+  initThemeToggle()
 </script>
 
 <style>
