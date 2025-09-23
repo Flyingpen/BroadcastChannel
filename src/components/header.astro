@@ -40,13 +40,6 @@ if (posts.length > 0) {
     }
   }
 }
-
-const uniqueTagCount = posts.reduce((acc, post) => {
-  if (Array.isArray(post?.tags)) {
-    post.tags.forEach((tag) => acc.add(tag))
-  }
-  return acc
-}, new Set()).size
 ---
 
 <section class="glass-panel overflow-hidden p-0">
@@ -55,23 +48,23 @@ const uniqueTagCount = posts.reduce((acc, post) => {
       class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,95,31,0.18),transparent_60%),radial-gradient(circle_at_20%_80%,rgba(59,130,246,0.15),transparent_55%)]"
     >
     </div>
-    <div class="relative grid gap-8 p-8 sm:p-10 lg:grid-cols-[auto,1fr] lg:items-center">
-      <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
-        <a href={SITE_URL} title={channel?.title} class="relative inline-flex">
+    <div class="relative flex flex-col gap-6 p-6 sm:p-8 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-4 md:gap-6">
+        <div class="relative inline-flex shrink-0">
           <span
-            class="absolute inset-0 scale-[1.12] rounded-3xl bg-gradient-to-tr from-brand-400/40 to-transparent blur-xl"
+            class="absolute inset-0 scale-[1.05] rounded-3xl bg-gradient-to-tr from-brand-400/30 to-transparent blur-xl"
           ></span>
           <img
             src={channel?.avatar?.startsWith('http') ? staticProxy + channel?.avatar : voidFile.src}
             alt={channel?.title}
             loading="eager"
-            class="relative h-24 w-24 rounded-3xl border border-white/30 object-cover shadow-soft transition hover:scale-[1.02] sm:h-28 sm:w-28"
+            class="relative h-20 w-20 rounded-3xl border border-white/30 object-cover shadow-soft transition hover:scale-[1.02] sm:h-24 sm:w-24"
           />
-        </a>
-        <div class="space-y-4">
+        </div>
+        <div class="space-y-3">
           <a
             href={SITE_URL}
-            class="inline-flex items-center gap-3 text-3xl font-semibold tracking-tight text-surface-900 transition hover:text-brand-500 dark:text-white"
+            class="inline-flex items-center gap-3 text-2xl font-semibold tracking-tight text-surface-900 transition hover:text-brand-500 dark:text-white"
           >
             {channel?.title}
           </a>
@@ -94,135 +87,109 @@ const uniqueTagCount = posts.reduce((acc, post) => {
         </div>
       </div>
 
-      <div class="flex flex-col gap-6">
-        <div class="flex flex-wrap items-center gap-3">
-          <ThemeToggle />
-          <a
-            href={RSS_URL}
-            target="_blank"
-            rel="alternate"
-            type="application/rss+xml"
-            title="订阅 RSS"
-            class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-          >
-            <img {...rss} alt="RSS 订阅" class="h-5 w-5" />
-          </a>
+      <div class="flex flex-wrap items-center justify-end gap-3">
+        <ThemeToggle />
+        <a
+          href={RSS_URL}
+          target="_blank"
+          rel="alternate"
+          type="application/rss+xml"
+          title="订阅 RSS"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+        >
+          <img {...rss} alt="RSS 订阅" class="h-5 w-5" />
+        </a>
 
-          {
-            PODCAST && (
-              <a
-                href={PODCAST}
-                target="_blank"
-                title="播客订阅"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-              >
-                <img {...podcast} alt="播客" class="h-5 w-5" />
-              </a>
-            )
-          }
+        {
+          PODCAST && (
+            <a
+              href={PODCAST}
+              target="_blank"
+              title="播客订阅"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...podcast} alt="播客" class="h-5 w-5" />
+            </a>
+          )
+        }
 
-          {
-            TWITTER && TWITTER.length > 0 && (
-              <a
-                href={`https://twitter.com/${TWITTER}`}
-                title="访问 Twitter"
-                target="_blank"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-              >
-                <img {...twitter} alt={`twitter.com/${TWITTER}`} class="h-5 w-5" />
-              </a>
-            )
-          }
+        {
+          TWITTER && TWITTER.length > 0 && (
+            <a
+              href={`https://twitter.com/${TWITTER}`}
+              title="访问 Twitter"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...twitter} alt={`twitter.com/${TWITTER}`} class="h-5 w-5" />
+            </a>
+          )
+        }
 
-          {
-            GITHUB && GITHUB.length > 0 && (
-              <a
-                href={`https://github.com/${GITHUB}`}
-                title="访问 GitHub"
-                target="_blank"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-              >
-                <img {...github} alt={`github.com/${GITHUB}`} class="h-5 w-5" />
-              </a>
-            )
-          }
+        {
+          GITHUB && GITHUB.length > 0 && (
+            <a
+              href={`https://github.com/${GITHUB}`}
+              title="访问 GitHub"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...github} alt={`github.com/${GITHUB}`} class="h-5 w-5" />
+            </a>
+          )
+        }
 
-          {
-            TELEGRAM && TELEGRAM.length > 0 && (
-              <a
-                href={`https://t.me/${TELEGRAM}`}
-                title="访问 Telegram"
-                target="_blank"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-              >
-                <img {...telegram} alt={`t.me/${TELEGRAM}`} class="h-5 w-5" />
-              </a>
-            )
-          }
+        {
+          TELEGRAM && TELEGRAM.length > 0 && (
+            <a
+              href={`https://t.me/${TELEGRAM}`}
+              title="访问 Telegram"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...telegram} alt={`t.me/${TELEGRAM}`} class="h-5 w-5" />
+            </a>
+          )
+        }
 
-          {
-            DISCORD && DISCORD.length > 0 && (
-              <a
-                href={DISCORD}
-                title="加入 Discord"
-                target="_blank"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-              >
-                <img {...discord} alt="Discord 邀请" class="h-5 w-5" />
-              </a>
-            )
-          }
+        {
+          DISCORD && DISCORD.length > 0 && (
+            <a
+              href={DISCORD}
+              title="加入 Discord"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...discord} alt="Discord 邀请" class="h-5 w-5" />
+            </a>
+          )
+        }
 
-          {
-            MASTODON && MASTODON.length > 0 && (
-              <a
-                href={`https://${MASTODON}`}
-                title="访问 Mastodon"
-                target="_blank"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-              >
-                <img {...mastodon} alt={`@${MASTODON}`} class="h-5 w-5" />
-              </a>
-            )
-          }
+        {
+          MASTODON && MASTODON.length > 0 && (
+            <a
+              href={`https://${MASTODON}`}
+              title="访问 Mastodon"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...mastodon} alt={`@${MASTODON}`} class="h-5 w-5" />
+            </a>
+          )
+        }
 
-          {
-            BLUESKY && BLUESKY.length > 0 && (
-              <a
-                href={`https://bsky.app/profile/${BLUESKY}`}
-                title="访问 Bluesky"
-                target="_blank"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
-              >
-                <img {...bluesky} alt={`@${BLUESKY}`} class="h-5 w-5" />
-              </a>
-            )
-          }
-        </div>
-
-        <div class="grid gap-4 sm:grid-cols-3">
-          <div
-            class="rounded-2xl border border-white/30 bg-white/70 p-4 text-sm shadow-inner dark:border-white/10 dark:bg-surface-900/70"
-          >
-            <p class="text-xs font-semibold text-slate-500">文章数量</p>
-            <p class="mt-2 text-2xl font-semibold text-surface-900 dark:text-white">{posts.length}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">当前列表正在展示的条目</p>
-          </div>
-          <div
-            class="rounded-2xl border border-white/30 bg-white/70 p-4 text-sm shadow-inner dark:border-white/10 dark:bg-surface-900/70"
-          >
-            <p class="text-xs font-semibold text-slate-500">标签数量</p>
-            <p class="mt-2 text-2xl font-semibold text-surface-900 dark:text-white">{uniqueTagCount}</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">内容中检测到的独立标签</p>
-          </div>
-          <div
-            class="rounded-2xl border border-white/30 bg-white/70 p-4 text-sm shadow-inner dark:border-white/10 dark:bg-surface-900/70"
-          >
-            <p class="text-xs font-semibold text-slate-500">同步模式</p>
-            <p class="mt-2 text-2xl font-semibold text-surface-900 dark:text-white">实时</p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">实时同步 Telegram 频道内容</p>
-          </div>
-        </div>
+        {
+          BLUESKY && BLUESKY.length > 0 && (
+            <a
+              href={`https://bsky.app/profile/${BLUESKY}`}
+              title="访问 Bluesky"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...bluesky} alt={`@${BLUESKY}`} class="h-5 w-5" />
+            </a>
+          )
+        }
       </div>
     </div>
   </div>
