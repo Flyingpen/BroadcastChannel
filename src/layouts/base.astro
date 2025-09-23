@@ -177,6 +177,7 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
                       <span>{nav.title}</span>
                       <span class="text-xs font-semibold text-brand-500 transition group-hover:translate-x-px">→</span>
                     </a>
+
                   ))
                 }
               </nav>
@@ -257,6 +258,34 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
           </div>
         </slot>
       </aside>
+
+                  </div>
+                ))
+              }
+            </div>
+            <input class="search-icon" name="icon" type="checkbox" placeholder={finalUIText.search} />
+            <form class="search-form" action={searchAction} method="get">
+              {GOOGLE_SEARCH_SITE ? <input type="hidden" name="as_sitesearch" value={GOOGLE_SEARCH_SITE} /> : null}
+              <input type="text" name="q" placeholder={finalUIText.search} />
+            </form>
+            <div class="copyright-wrap">
+              {finalUIText.poweredBy}
+              <a
+                href="https://github.com/ccbikai/BroadcastChannel"
+                title="BroadcastChannel"
+                target="_blank"
+                rel="noopener"
+              >
+                BroadcastChannel
+              </a> &
+              <a href="https://github.com/Planetable/SiteTemplateSepia" title="Sepia" target="_blank" rel="noopener">
+                Sepia
+              </a>
+            </div>
+          </slot>
+        </div>
+      </div>
+      
     </div>
 
     <a href="#page-top" id="back-to-top" aria-label="返回顶部">
