@@ -9,37 +9,77 @@ const posts = channel.posts ?? []
 
 const beforeCursor = posts[posts.length - 1]?.id
 const afterCursor = posts[0]?.id
-// const cursor = +Astro.params.cursor
 ---
 
-<Layout channel={channel} id="main-container">
+<Layout channel={channel}>
   <slot name="header">
     <Header channel={channel} />
   </slot>
-  <div class="items">
-    {posts.map((post) => <Item post={post} isItem={isItem} />)}
-  </div>
 
-  <div class="pages-container">
-    {
-      before && beforeCursor > 1 ? (
-        <a href={`${SITE_URL}before/${beforeCursor}`} title="Before" class="page">
-          Before
-        </a>
-      ) : (
-        <span class="page-placeholder">&nbsp;</span>
-      )
-    }
+  <div class="space-y-8">
+    <div
+      class="flex flex-wrap items-center gap-3 rounded-3xl border border-white/30 bg-white/70 px-6 py-3 text-sm text-slate-600 shadow-inner dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-300"
+    >
+      <span class="relative inline-flex h-2 w-2 rounded-full bg-brand-500">
+        <span class="absolute inset-[-6px] rounded-full bg-brand-500/40 blur-sm"></span>
+      </span>
+      <span class="font-semibold text-surface-900 dark:text-white">Live feed</span>
+      <span class="hidden text-slate-500 md:inline">Streaming the latest updates from Telegram in real time.</span>
+      <span class="text-slate-500">{posts.length} posts loaded.</span>
+    </div>
 
-    <div class="pages-info"></div>
-    {
-      after && afterCursor ? (
-        <a href={`${SITE_URL}after/${afterCursor}`} title="After" class="page">
-          After
-        </a>
-      ) : (
-        <span class="page-placeholder">&nbsp;</span>
-      )
-    }
+    <div class="space-y-6">
+      {
+        posts.length === 0 ? (
+          <div class="glass-panel text-center text-slate-500 dark:text-slate-300">
+            Nothing to show just yet. Try refreshing or adjusting your filters.
+          </div>
+        ) : (
+          posts.map((post, index) => <Item post={post} isItem={isItem} index={index} />)
+        )
+      }
+    </div>
+
+    <div
+      class="flex flex-col gap-4 rounded-3xl border border-white/30 bg-white/70 p-4 text-sm shadow-inner dark:border-white/10 dark:bg-surface-900/70 md:flex-row md:items-center md:justify-between"
+    >
+      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-300">
+        <span class="inline-flex h-2 w-2 animate-pulse rounded-full bg-brand-500"></span>
+        <span>Navigate the timeline</span>
+      </div>
+      <div class="flex flex-1 items-center justify-between gap-3 md:justify-end">
+        {
+          before && beforeCursor > 1 ? (
+            <a
+              href={`${SITE_URL}before/${beforeCursor}`}
+              title="Before"
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/30 bg-white/80 px-4 py-2 font-medium text-slate-600 transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-200"
+            >
+              <span>Older posts</span>
+            </a>
+          ) : (
+            <span class="inline-flex items-center gap-2 rounded-2xl border border-dashed border-white/20 px-4 py-2 text-slate-400 dark:border-white/10 dark:text-slate-600">
+              No older posts
+            </span>
+          )
+        }
+
+        {
+          after && afterCursor ? (
+            <a
+              href={`${SITE_URL}after/${afterCursor}`}
+              title="After"
+              class="inline-flex items-center gap-2 rounded-2xl border border-white/30 bg-white/80 px-4 py-2 font-medium text-slate-600 transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-200"
+            >
+              <span>Newer posts</span>
+            </a>
+          ) : (
+            <span class="inline-flex items-center gap-2 rounded-2xl border border-dashed border-white/20 px-4 py-2 text-slate-400 dark:border-white/10 dark:text-slate-600">
+              You are at the latest post
+            </span>
+          )
+        }
+      </div>
+    </div>
   </div>
 </Layout>

@@ -1,7 +1,4 @@
 ---
-import '../assets/normalize.css'
-import '../assets/style.css'
-import '../assets/global.css'
 import { SEO } from 'astro-seo'
 import { getConfig } from '../lib/config'
 import backToTopIcon from '../assets/back-to-top.svg'
@@ -9,7 +6,6 @@ import backToTopIcon from '../assets/back-to-top.svg'
 const { SITE_URL, RSS_URL, RSS_PREFIX } = Astro.locals
 const { channel } = Astro.props
 
-// 使用配置系统获取值
 const locale = getConfig(import.meta.env, Astro, 'LOCALE', 'en')
 const themeColor = getConfig(import.meta.env, Astro, 'THEME_COLOR', '#f4f1ec')
 const customCSS = getConfig(import.meta.env, Astro, 'CUSTOM_CSS', '')
@@ -70,7 +66,6 @@ const navs = (getConfig(import.meta.env, Astro, 'NAVS') || '')
     }
   })
 
-// 解析 UI 文本配置
 const uiTextConfig = getConfig(import.meta.env, Astro, 'UI_TEXT', '{}')
 let uiText = {}
 try {
@@ -79,7 +74,6 @@ try {
   uiText = {}
 }
 
-// 默认 UI 文本
 const defaultUIText = {
   home: 'Home',
   tags: 'Tags',
@@ -88,8 +82,11 @@ const defaultUIText = {
   poweredBy: 'Powered by',
 }
 
-// 合并 UI 文本
 const finalUIText = { ...defaultUIText, ...uiText }
+
+const navBaseClass =
+  'flex w-full items-center justify-between gap-3 rounded-2xl border border-white/20 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 shadow-inner shadow-white/10 transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-200'
+const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hover:text-white'
 ---
 
 <!doctype html>
@@ -101,7 +98,7 @@ const finalUIText = { ...defaultUIText, ...uiText }
     <link rel="alternate" type="application/rss+xml" title={`${RSS_PREFIX}${channel?.title}`} href={RSS_URL} />
     <style is:inline>
       @view-transition {
-        navigation: auto; /* enabled */
+        navigation: auto;
       }
     </style>
     {customCSS && <style is:inline set:html={customCSS} />}
@@ -117,89 +114,162 @@ const finalUIText = { ...defaultUIText, ...uiText }
     <Fragment set:html={HEADER_INJECT} />
   </head>
 
-  <body>
-    <div id="wrapper">
-      <div id="container">
-        <div id="main-container">
+  <body
+    id="page-top"
+    class="relative overflow-x-hidden bg-transparent text-surface-900 transition-colors duration-500 selection:bg-brand-400/30 selection:text-brand-900 dark:text-slate-100"
+  >
+    <div
+      class="pointer-events-none fixed inset-0 -z-20 bg-gradient-to-br from-surface-50 via-white to-surface-200 opacity-95 dark:from-surface-950 dark:via-surface-900 dark:to-surface-900"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute inset-x-0 top-[-20%] -z-10 mx-auto h-[720px] w-[720px] rounded-full bg-[radial-gradient(circle_at_top,_rgba(255,95,31,0.18),_transparent_55%)] blur-3xl dark:opacity-70"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute bottom-[-15%] right-[-5%] -z-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_bottom,_rgba(59,130,246,0.2),_transparent_60%)] blur-3xl dark:opacity-60"
+    >
+    </div>
+
+    <div
+      class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-10 px-4 py-10 sm:px-6 lg:flex-row lg:items-start lg:gap-12 lg:px-10"
+    >
+      <main class="flex-1 space-y-8">
+        <slot name="header" />
+        <div class="space-y-10">
           <slot />
         </div>
-        <div id="aside-container">
-          <slot name="aside">
-            <div class="nav">
-              <div class="nav-item">
-                <a href={SITE_URL} title={channel?.title} class={`nav-link ${pathname === '/' ? 'current' : ''}`}>
-                  {finalUIText.home}
-                </a>
+      </main>
+
+      <aside class="lg:sticky lg:top-16 lg:mt-2 lg:max-w-sm lg:self-start">
+        <slot name="aside">
+          <div class="flex flex-col gap-6">
+            <section class="glass-panel space-y-5">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+                  Navigation
+                </p>
+                <span
+                  class="rounded-full bg-brand-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-brand-500"
+                >
+                  Live
+                </span>
               </div>
-              {
-                TAGS ? (
-                  <div class="nav-item">
-                    <a
-                      href={`${SITE_URL}tags`}
-                      title={finalUIText.tags}
-                      class={`nav-link ${pathname === '/tags' ? 'current' : ''}`}
-                    >
-                      {finalUIText.tags}
+              <nav class="flex flex-col gap-2">
+                <a href={SITE_URL} class={`${navBaseClass} ${pathname === '/' ? navActiveClass : ''}`}>
+                  <span>{finalUIText.home}</span>
+                </a>
+                {
+                  TAGS ? (
+                    <a href={`${SITE_URL}tags`} class={`${navBaseClass} ${pathname === '/tags' ? navActiveClass : ''}`}>
+                      <span>{finalUIText.tags}</span>
                     </a>
-                  </div>
-                ) : null
-              }
-              {
-                LINKS ? (
-                  <div class="nav-item">
+                  ) : null
+                }
+                {
+                  LINKS ? (
                     <a
                       href={`${SITE_URL}links`}
-                      title={finalUIText.links}
-                      class={`nav-link ${pathname === '/links' ? 'current' : ''}`}
+                      class={`${navBaseClass} ${pathname === '/links' ? navActiveClass : ''}`}
                     >
-                      {finalUIText.links}
+                      <span>{finalUIText.links}</span>
                     </a>
-                  </div>
-                ) : null
-              }
-              {
-                navs.map((nav) => (
-                  <div class="nav-item">
-                    <a href={nav.href} title={nav.title} target="_blank" rel="noopener" class="nav-link">
-                      {nav.title}
+                  ) : null
+                }
+                {
+                  navs.map((nav) => (
+                    <a href={nav.href} target="_blank" rel="noopener" class={`${navBaseClass} group`}>
+                      <span>{nav.title}</span>
+                      <span class="text-xs font-semibold uppercase tracking-wide text-brand-500 transition group-hover:translate-x-px">
+                        ->
+                      </span>
                     </a>
-                  </div>
-                ))
-              }
-            </div>
-            <input class="search-icon" name="icon" type="checkbox" placeholder={finalUIText.search} />
-            <form class="search-form" action={searchAction} method="get">
-              {GOOGLE_SEARCH_SITE ? <input type="hidden" name="as_sitesearch" value={GOOGLE_SEARCH_SITE} /> : null}
-              <input type="text" name="q" placeholder={finalUIText.search} />
-            </form>
-            <div class="copyright-wrap">
-              {finalUIText.poweredBy}
-              <a
-                href="https://github.com/ccbikai/BroadcastChannel"
-                title="BroadcastChannel"
-                target="_blank"
-                rel="noopener"
-              >
-                BroadcastChannel
-              </a> &
-              <a href="https://github.com/Planetable/SiteTemplateSepia" title="Sepia" target="_blank" rel="noopener">
-                Sepia
-              </a>
-            </div>
+                  ))
+                }
+              </nav>
+            </section>
+
+            <section class="glass-panel space-y-4">
+              <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+                {finalUIText.search}
+              </p>
+              <form action={searchAction} method="get" class="space-y-3">
+                {GOOGLE_SEARCH_SITE ? <input type="hidden" name="as_sitesearch" value={GOOGLE_SEARCH_SITE} /> : null}
+                <div class="relative">
+                  <span
+                    class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-400 dark:text-slate-500"
+                  >
+                    <svg
+                      class="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"></path>
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    name="q"
+                    placeholder={finalUIText.search}
+                    class="w-full rounded-2xl border border-white/30 bg-white/70 px-11 py-3 text-sm text-slate-700 shadow-inner transition focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200/60 dark:border-white/10 dark:bg-surface-900/80 dark:text-slate-200"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-brand-400"
+                >
+                  <span>Search</span>
+                </button>
+              </form>
+            </section>
+
+            <section class="glass-panel space-y-3 text-sm text-slate-500 dark:text-slate-400">
+              <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+                {finalUIText.poweredBy}
+              </p>
+              <p class="leading-relaxed">
+                <a
+                  href="https://github.com/ccbikai/BroadcastChannel"
+                  class="font-semibold text-brand-500 hover:text-brand-400"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  BroadcastChannel
+                </a>
+                <span class="mx-1">&</span>
+                <a
+                  href="https://github.com/Planetable/SiteTemplateSepia"
+                  class="font-semibold text-brand-500 hover:text-brand-400"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Sepia
+                </a>
+              </p>
+            </section>
+
             {
               FOOTER_INJECT && (
-                <div class="footer-inject-wrap">
+                <div class="glass-panel text-sm text-slate-500 dark:text-slate-300">
                   <Fragment set:html={FOOTER_INJECT} />
                 </div>
               )
             }
-          </slot>
-        </div>
-      </div>
+          </div>
+        </slot>
+      </aside>
     </div>
-    <a href="#wrapper" id="back-to-top" aria-label="Back to top">
+
+    <a href="#page-top" id="back-to-top" aria-label="Back to top">
       <img {...backToTopIcon} alt="Back to Top" />
     </a>
+
     {customJS && <script is:inline set:html={customJS} />}
   </body>
 </html>

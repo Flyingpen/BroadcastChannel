@@ -2,6 +2,7 @@ import process from 'node:process'
 import cloudflare from '@astrojs/cloudflare'
 import netlify from '@astrojs/netlify'
 import node from '@astrojs/node'
+import tailwind from '@astrojs/tailwind'
 import vercel from '@astrojs/vercel'
 import sentry from '@sentry/astro'
 import { defineConfig } from 'astro/config'
@@ -30,6 +31,9 @@ export default defineConfig({
   output: isGitHubPages ? 'static' : 'server',
   adapter: isGitHubPages ? undefined : (providers[adapterProvider] || providers.node),
   integrations: [
+    tailwind({
+      css: ['src/styles/global.css'],
+    }),
     ...(process.env.SENTRY_DSN
       ? [
           sentry({
@@ -51,7 +55,7 @@ export default defineConfig({
     ssr: {
       noExternal: process.env.DOCKER ? !!process.env.DOCKER : undefined,
       external: [
-        ...adapterProvider === 'cloudflare_pages'
+        ...(adapterProvider === 'cloudflare_pages'
           ? [
               'module',
               'url',
@@ -83,7 +87,7 @@ export default defineConfig({
               'node:child_process',
               'node:inspector',
             ]
-          : [],
+          : []),
       ],
     },
   },

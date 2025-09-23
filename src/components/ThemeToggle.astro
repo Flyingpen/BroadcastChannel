@@ -3,147 +3,73 @@ import moonIcon from '../assets/moon.svg'
 import sunIcon from '../assets/sun.svg'
 ---
 
-<button id="theme-toggle" class="theme-toggle" aria-label="切换主题" title="切换主题">
-  <img id="theme-icon-sun" src={sunIcon.src} alt="明亮模式" class="theme-icon" />
-  <img id="theme-icon-moon" src={moonIcon.src} alt="暗色模式" class="theme-icon" />
+<button
+  id="theme-toggle"
+  class="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 dark:border-white/10 dark:bg-surface-900/70"
+  aria-label="Toggle theme"
+  title="Toggle theme"
+>
+  <img id="theme-icon-sun" src={sunIcon.src} alt="Light mode" class="h-5 w-5 transition duration-200" />
+  <img id="theme-icon-moon" src={moonIcon.src} alt="Dark mode" class="hidden h-5 w-5 transition duration-200" />
 </button>
 
 <script is:inline>
-  // 直接的主题切换脚本 - 简化版本确保功能正常
-  console.info('Theme script loaded')
+  const THEME_KEY = 'theme'
+  const doc = document.documentElement
 
-  // 立即设置默认主题
-  function setInitialTheme() {
-    console.info('Setting initial theme')
-
-    // 标记JavaScript已接管主题管理
-    document.documentElement.classList.add('js-theme-ready')
-
-    let savedTheme = null
-    try {
-      savedTheme = localStorage.getItem('theme')
-    } catch (e) {
-      console.warn('Cannot access localStorage', e)
-    }
-
-    // 默认为 light
-    const theme = savedTheme === 'dark' ? 'dark' : 'light'
-    console.info('Initial theme:', theme)
-
-    document.documentElement.setAttribute('data-theme', theme)
-    updateIcons(theme)
-  }
-
-  function updateIcons(theme) {
-    console.info('Updating icons for theme:', theme)
+  function applyTheme(theme) {
+    doc.setAttribute('data-theme', theme)
     const sunIcon = document.getElementById('theme-icon-sun')
     const moonIcon = document.getElementById('theme-icon-moon')
-
     if (!sunIcon || !moonIcon) {
-      console.error('Icons not found')
       return
     }
 
-    if (theme === 'dark') {
-      sunIcon.classList.remove('active')
-      moonIcon.classList.add('active')
-    } else {
-      sunIcon.classList.add('active')
-      moonIcon.classList.remove('active')
-    }
+    sunIcon.classList.toggle('hidden', theme === 'dark')
+    moonIcon.classList.toggle('hidden', theme !== 'dark')
+  }
+
+  function getPreferredTheme() {
+    try {
+      const stored = localStorage.getItem(THEME_KEY)
+      if (stored === 'dark' || stored === 'light') {
+        return stored
+      }
+    } catch {}
+
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+
+  function setInitialTheme() {
+    doc.classList.add('js-theme-ready')
+    applyTheme(getPreferredTheme())
   }
 
   function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme')
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
-
-    console.info('Toggling theme from', currentTheme, 'to', newTheme)
-
-    document.documentElement.setAttribute('data-theme', newTheme)
-    updateIcons(newTheme)
-
+    const current = doc.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+    const next = current === 'dark' ? 'light' : 'dark'
+    applyTheme(next)
     try {
-      localStorage.setItem('theme', newTheme)
-    } catch (e) {
-      console.warn('Cannot save to localStorage', e)
-    }
+      localStorage.setItem(THEME_KEY, next)
+    } catch {}
   }
 
-  // DOM 加载完成后初始化
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      console.info('DOM loaded, initializing theme')
-      setInitialTheme()
-
-      const button = document.getElementById('theme-toggle')
-      if (button) {
-        button.addEventListener('click', (e) => {
-          e.preventDefault()
-          console.info('Theme button clicked')
-          toggleTheme()
-        })
-        console.info('Theme button listener added')
-      } else {
-        console.error('Theme button not found')
-      }
-    })
-  } else {
-    console.info('DOM already loaded, initializing theme immediately')
+  function setup() {
     setInitialTheme()
-
     const button = document.getElementById('theme-toggle')
-    if (button) {
-      button.addEventListener('click', (e) => {
-        e.preventDefault()
-        console.info('Theme button clicked')
-        toggleTheme()
-      })
-      console.info('Theme button listener added')
-    } else {
-      console.error('Theme button not found')
+    if (!button) {
+      return
     }
+
+    button.addEventListener('click', (event) => {
+      event.preventDefault()
+      toggleTheme()
+    })
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup, { once: true })
+  } else {
+    setup()
   }
 </script>
-
-<style>
-  .theme-toggle {
-    position: relative;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .theme-toggle:hover {
-    background-color: var(--code-background-color);
-  }
-
-  .theme-icon {
-    width: 16px;
-    height: 16px;
-    position: absolute;
-    transition:
-      opacity 0.2s ease,
-      transform 0.2s ease;
-    opacity: 0;
-    transform: scale(0.8);
-    filter: var(--icon-secondary-filter);
-  }
-
-  .theme-icon.active {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  /* 确保图标在不同主题下都能正确显示 */
-  [data-theme='dark'] .theme-icon {
-    filter: invert(1) var(--icon-secondary-filter);
-  }
-</style>

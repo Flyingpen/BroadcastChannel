@@ -1,5 +1,4 @@
 ---
-import '../assets/item.css'
 import 'prismjs/themes/prism.css'
 import dayjs from '../lib/dayjs'
 import { getEnv } from '../lib/env'
@@ -10,51 +9,84 @@ const timezone = getEnv(import.meta.env, Astro, 'TIMEZONE')
 locale && dayjs.locale(locale)
 
 const { SITE_URL } = Astro.locals
-const { post, isItem } = Astro.props
+const { post, isItem, index = 0 } = Astro.props
 
 const channel = getEnv(import.meta.env, Astro, 'CHANNEL')
 const COMMENTS = getEnv(import.meta.env, Astro, 'COMMENTS')
 
 const datetime = dayjs(post.datetime).tz(timezone)
-const timeago = datetime.isBefore(dayjs().subtract(1, 'w')) ? datetime.format('HH:mm · ll · ddd') : datetime.fromNow()
+const timeLabel = datetime.isBefore(dayjs().subtract(1, 'w'))
+  ? datetime.format('HH:mm �� ll �� ddd')
+  : datetime.fromNow()
+
+const accentGradients = [
+  'from-brand-500/15 via-transparent to-transparent',
+  'from-sky-500/15 via-transparent to-transparent',
+  'from-fuchsia-500/15 via-transparent to-transparent',
+  'from-emerald-500/15 via-transparent to-transparent',
+]
+const accentBackground = accentGradients[index % accentGradients.length]
 ---
 
-<div class="item" style={{ 'view-transition-name': `post-${post.id}` }}>
-  <div class="time-box">
-    <div class="dot"></div>
-    <div class="time">
-      <a href={`${SITE_URL}posts/${post.id}`} title={post.datetime} class="item-link">
-        <time datetime={post.datetime} title={timeago}>{timeago}</time>
-      </a>
-    </div>
+<article
+  class="group relative overflow-hidden rounded-3xl border border-white/30 bg-white/80 p-6 shadow-inner transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-glow dark:border-white/10 dark:bg-surface-900/70"
+  style={{ 'view-transition-name': `post-${post.id}` }}
+>
+  <div
+    class={`pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition duration-500 group-hover:opacity-100 ${accentBackground}`}
+  >
   </div>
-  {post.content.length > 0 && <div class={`text-box content`} set:html={post.content} />}
-  {
-    post.tags.length > 0 && (
-      <div class="tag-box" style={post.content.length === 0 ? 'padding-top: 30px;' : ''}>
-        <div class="tag-icon" />
-        {post.tags.map((tag) => (
-          <a href={`/search/%23${tag}`} title={tag} class="tag">
-            {tag}
-          </a>
-        ))}
-      </div>
-    )
-  }
+  <div class="relative flex flex-col gap-6">
+    <header
+      class="flex flex-wrap items-center justify-between gap-4 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400"
+    >
+      <a
+        href={`${SITE_URL}posts/${post.id}`}
+        title={post.datetime}
+        class="inline-flex items-center gap-2 text-brand-500 transition hover:text-brand-400"
+      >
+        <span class="inline-flex h-2 w-2 animate-pulse rounded-full bg-brand-500" aria-hidden="true"></span>
+        <time datetime={post.datetime} title={timeLabel}>{timeLabel}</time>
+      </a>
+      <span
+        class="rounded-full border border-white/20 px-3 py-1 text-[10px] tracking-[0.35em] text-slate-400 dark:border-white/10"
+      >
+        #{post.id}
+      </span>
+    </header>
 
-  {
-    COMMENTS && isItem && (
-      <div class="comments">
-        <script
-          is:inline
-          async
-          src="https://telegram.org/js/telegram-widget.js"
-          data-telegram-discussion={`${channel}/${post.id}`}
-          data-comments-limit="50"
-          data-colorful="1"
-          data-color="454545"
-        />
-      </div>
-    )
-  }
-</div>
+    {post.content.length > 0 && <div class="rich-content" set:html={post.content} />}
+
+    {
+      post.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {post.tags.map((tag) => (
+            <a
+              href={`/search/%23${tag}`}
+              title={tag}
+              class="inline-flex items-center gap-2 rounded-full border border-brand-400/40 bg-brand-400/10 px-3 py-1 text-xs font-medium text-brand-500 transition hover:border-brand-400 hover:bg-brand-400/20"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      COMMENTS && isItem && (
+        <div class="rounded-3xl border border-white/20 bg-white/60 p-4 text-sm text-slate-600 shadow-inner dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-300">
+          <script
+            is:inline
+            async
+            src="https://telegram.org/js/telegram-widget.js"
+            data-telegram-discussion={`${channel}/${post.id}`}
+            data-comments-limit="50"
+            data-colorful="1"
+            data-color="454545"
+          />
+        </div>
+      )
+    }
+  </div>
+</article>
