@@ -12,7 +12,7 @@
     "astro": "astro",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "postinstall": "test -d .git && simple-git-hooks || true"
+    "postinstall": "node -e \"try{require('fs').statSync('.git');require('child_process').execSync('npx simple-git-hooks',{stdio:'inherit'});}catch(e){console.log('Skipping simple-git-hooks');}\""
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.12",

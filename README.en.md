@@ -111,7 +111,7 @@ For detailed tutorials, see [Astro Deployment Guide](https://docs.astro.build/en
 
 - **Frontend Framework**: [Astro v5](https://astro.build/) - Modern full-stack web framework
 - **Content Management**: [Telegram Channels](https://telegram.org/tour/channels) - Zero-cost content management system
-- **Design Template**: [Sepia](https://github.com/Planetable/SiteTemplateSepia) - Clean and elegant blog template
+- **Design Template**: [Flyingpen](https://github.com/Flyingpen) - Clean and elegant blog template
 - **Theme System**: CSS custom properties + localStorage persistence
 - **Configuration Management**: JSONC (JSON with Comments) + environment variables dual support
 - **Code Quality**: ESLint + Anthony Fu configuration standards
@@ -135,7 +135,7 @@ docker run -d --name broadcastchannel \
 
 #### Method 1: Using Config File (Recommended for Beginners)
 
-1. [Fork](https://github.com/ccbikai/BroadcastChannel/fork) project to your GitHub
+1. [Fork](https://github.com/Flyingpen/BroadcastChannel/fork) project to your GitHub
 2. Modify `CHANNEL` configuration in `broadcast.config.jsonc`
 3. Create project on Cloudflare/Netlify/Vercel
 4. Select `BroadcastChannel` project and `Astro` framework
@@ -143,7 +143,7 @@ docker run -d --name broadcastchannel \
 
 #### Method 2: Using Environment Variables
 
-1. [Fork](https://github.com/ccbikai/BroadcastChannel/fork) project to your GitHub
+1. [Fork](https://github.com/Flyingpen/BroadcastChannel/fork) project to your GitHub
 2. Create project on Cloudflare/Netlify/Vercel
 3. Configure environment variable `CHANNEL=your_channel_name`
 4. Save and deploy
@@ -303,11 +303,9 @@ The application automatically detects your system's color scheme preference and 
 - ✅ Docker/VPS
 - ✅ Other platforms supporting Node.js SSR
 
-## ☕ Support the Project
+## ☕ Sponsor
 
-If this project helps you, welcome to support:
-
-1. [Follow Telegram Channel](https://t.me/miantiao_me)
-2. [Follow 𝕏 (Twitter)](https://404.li/kai)
-3. [GitHub Sponsor](https://github.com/sponsors/ccbikai)
+1. [Follow me on Telegram](https://t.me/miantiao_me)
+2. [Follow me on X/Twitter](https://404.li/x)
+3. [Sponsor me on GitHub](https://github.com/Flyingpen)
 4. ⭐ Star the project

@@ -126,7 +126,7 @@ BroadcastChannel 支持部署到支�?Node.js SSR 的无服务器平台，�?C
 
 - **前端框架**: [Astro v5](https://astro.build/) - 现代化的全栈 Web 框架
 - **内容管理**: [Telegram 频道](https://telegram.org/tour/channels) - 零成本的内容管理系统
-- **设计模板**: [Sepia](https://github.com/Planetable/SiteTemplateSepia) - 简洁优雅的博客模板
+- **设计模板**: [Flyingpen](https://github.com/Flyingpen) - 简洁优雅的博客模板
 - **主题系统**: CSS 自定义属�?+ localStorage 持久�?
 - **配置管理**: JSONC（支持注释的 JSON�? 环境变量双重支持
 - **代码质量**: ESLint + Anthony Fu 配置规范
@@ -218,3 +218,9 @@ SITE_DESCRIPTION=你的网站描述
 5. 如需再次部署，只需重复执行编译命令或触发平台的重新构建。
 
 > 提示：`SERVER_ADAPTER=edgeone` 会在构建阶段禁用所有需要服务端渲染的页面，仅输出适合静态托管的内容。
+
+### ☕ 赞助
+
+1. [在 Telegram 关注我](https://t.me/miantiao_me)
+2. [在 𝕏 上关注我](https://404.li/x)
+3. [在 GitHub 赞助我](https://github.com/Flyingpen)
