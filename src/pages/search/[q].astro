@@ -9,7 +9,7 @@ const query = Astro.params?.q ? decodeURIComponent(Astro.params.q) : ''
 let channel = {
   posts: [],
   seo: {
-    title: query ? `Search: ${query}` : 'Search',
+    title: query ? `搜索：${query}` : '搜索',
     noindex: true,
   },
 }
@@ -20,7 +20,7 @@ if (query) {
   })
 
   channel.seo = {
-    title: `Search: ${query}`,
+    title: `搜索：${query}`,
     noindex: true,
   }
 }

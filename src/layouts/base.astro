@@ -75,11 +75,11 @@ try {
 }
 
 const defaultUIText = {
-  home: 'Home',
-  tags: 'Tags',
-  links: 'Links',
-  search: 'Search',
-  poweredBy: 'Powered by',
+  home: '首页',
+  tags: '标签',
+  links: '友链',
+  search: '站内搜索',
+  poweredBy: '由以下项目驱动',
 }
 
 const finalUIText = { ...defaultUIText, ...uiText }
@@ -146,14 +146,9 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
           <div class="flex flex-col gap-6">
             <section class="glass-panel space-y-5">
               <div class="flex items-center justify-between">
-                <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
-                  Navigation
-                </p>
-                <span
-                  class="rounded-full bg-brand-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-brand-500"
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">导航面板</p>
+                <span class="rounded-full bg-brand-500/10 px-3 py-1 text-[10px] font-semibold text-brand-500">即时</span
                 >
-                  Live
-                </span>
               </div>
               <nav class="flex flex-col gap-2">
                 <a href={SITE_URL} class={`${navBaseClass} ${pathname === '/' ? navActiveClass : ''}`}>
@@ -180,9 +175,7 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
                   navs.map((nav) => (
                     <a href={nav.href} target="_blank" rel="noopener" class={`${navBaseClass} group`}>
                       <span>{nav.title}</span>
-                      <span class="text-xs font-semibold uppercase tracking-wide text-brand-500 transition group-hover:translate-x-px">
-                        ->
-                      </span>
+                      <span class="text-xs font-semibold text-brand-500 transition group-hover:translate-x-px">→</span>
                     </a>
                   ))
                 }
@@ -190,7 +183,7 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
             </section>
 
             <section class="glass-panel space-y-4">
-              <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+              <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">
                 {finalUIText.search}
               </p>
               <form action={searchAction} method="get" class="space-y-3">
@@ -224,13 +217,13 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
                   type="submit"
                   class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-brand-400"
                 >
-                  <span>Search</span>
+                  <span>搜索</span>
                 </button>
               </form>
             </section>
 
             <section class="glass-panel space-y-3 text-sm text-slate-500 dark:text-slate-400">
-              <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">
+              <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">
                 {finalUIText.poweredBy}
               </p>
               <p class="leading-relaxed">
@@ -266,8 +259,8 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
       </aside>
     </div>
 
-    <a href="#page-top" id="back-to-top" aria-label="Back to top">
-      <img {...backToTopIcon} alt="Back to Top" />
+    <a href="#page-top" id="back-to-top" aria-label="返回顶部">
+      <img {...backToTopIcon} alt="返回顶部" />
     </a>
 
     {customJS && <script is:inline set:html={customJS} />}

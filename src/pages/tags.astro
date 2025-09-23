@@ -7,7 +7,7 @@ import { getEnv } from '../lib/env'
 const channel = await getChannelInfo(Astro)
 
 channel.seo = {
-  title: 'Tags',
+  title: '标签',
 }
 
 const tags = (getEnv(import.meta.env, Astro, 'TAGS') || '')
@@ -24,22 +24,20 @@ const tags = (getEnv(import.meta.env, Astro, 'TAGS') || '')
   <section class="glass-panel space-y-6">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-surface-900 dark:text-white">Explore tags</h1>
-        <p class="text-sm text-slate-500 dark:text-slate-300">
-          Dive into themed updates sourced directly from the channel.
-        </p>
+        <h1 class="text-2xl font-semibold text-surface-900 dark:text-white">标签索引</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-300">快速查看频道中提及的主题标签。</p>
       </div>
       <span
-        class="rounded-full border border-white/30 bg-white/70 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-slate-500 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-300"
+        class="rounded-full border border-white/30 bg-white/70 px-4 py-1 text-xs font-semibold text-slate-500 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-300"
       >
-        {tags.length} tags
+        共 {tags.length} 个标签
       </span>
     </div>
 
     {
       tags.length === 0 ? (
         <p class="rounded-3xl border border-dashed border-white/30 px-6 py-5 text-sm text-slate-500 dark:border-white/10 dark:text-slate-400">
-          No tags configured yet. Add comma separated values to the TAGS environment variable to make this page shine.
+          暂未配置标签，请在环境变量 TAGS 中以逗号分隔填写标签后再访问此页面。
         </p>
       ) : (
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -49,9 +47,7 @@ const tags = (getEnv(import.meta.env, Astro, 'TAGS') || '')
               class="group flex items-center justify-between gap-2 rounded-2xl border border-white/30 bg-white/80 px-5 py-4 text-sm font-medium text-surface-900 shadow-inner transition hover:-translate-y-1 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-200"
             >
               <span>#{tag}</span>
-              <span class="text-xs font-semibold uppercase tracking-wide text-brand-500 transition group-hover:translate-x-px">
-                ->
-              </span>
+              <span class="text-xs font-semibold text-brand-500 transition group-hover:translate-x-px">→</span>
             </a>
           ))}
         </div>
