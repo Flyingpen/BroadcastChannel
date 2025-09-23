@@ -1,3 +1,4 @@
+export const getStaticPaths = () => []
 const targetWhitelist = [
   't.me',
   'telegram.org',
@@ -9,6 +10,10 @@ const targetWhitelist = [
 ]
 
 export async function GET({ request, params, url }) {
+  if (!params?.url) {
+    return new Response('', { status: 204 })
+  }
+
   try {
     const target = new URL(params.url + url.search)
     if (!targetWhitelist.some(domain => target.hostname.endsWith(domain))) {

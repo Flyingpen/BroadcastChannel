@@ -1,8 +1,26 @@
 import forms from '@tailwindcss/forms'
 import typography from '@tailwindcss/typography'
-import { defineConfig } from 'tailwindcss'
 
-export default defineConfig({
+const keyframes = {
+  aurora: {
+    '0%': { backgroundPosition: '0% 50%' },
+    '50%': { backgroundPosition: '100% 50%' },
+    '100%': { backgroundPosition: '0% 50%' },
+  },
+}
+
+keyframes['float-card'] = {
+  '0%, 100%': { transform: 'translateY(0)' },
+  '50%': { transform: 'translateY(-4px)' },
+}
+
+const animation = {
+  aurora: 'aurora 16s ease infinite',
+}
+
+animation['float-card'] = 'float-card 6s ease-in-out infinite'
+
+const tailwindConfig = {
   content: [
     './src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}',
     './public/**/*.html',
@@ -34,8 +52,8 @@ export default defineConfig({
         },
       },
       fontFamily: {
-        display: ['\'Plus Jakarta Sans\'', '\'Segoe UI\'', '\'Helvetica Neue\'', 'Arial', 'sans-serif'],
-        body: ['\'Inter\'', '\'Segoe UI\'', '\'Helvetica Neue\'', 'Arial', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        body: ['Inter', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       boxShadow: {
         glow: '0 0 40px rgba(255, 95, 31, 0.25)',
@@ -44,22 +62,11 @@ export default defineConfig({
       backdropBlur: {
         xs: '2px',
       },
-      keyframes: {
-        'float-card': {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-4px)' },
-        },
-        'aurora': {
-          '0%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-          '100%': { backgroundPosition: '0% 50%' },
-        },
-      },
-      animation: {
-        'float-card': 'float-card 6s ease-in-out infinite',
-        'aurora': 'aurora 16s ease infinite',
-      },
+      keyframes,
+      animation,
     },
   },
-  plugins: [forms(), typography()],
-})
+  plugins: [forms, typography],
+}
+
+export default tailwindConfig

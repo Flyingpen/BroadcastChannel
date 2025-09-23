@@ -28,7 +28,9 @@ const isGitHubPages = process.env.GITHUB_PAGES === 'true'
 const staticProviders = new Set(['edgeone'])
 const isEdgeOne = adapterProvider === 'edgeone'
 const isStaticDeployment = isGitHubPages || staticProviders.has(adapterProvider)
+const edgeOneStaticRoutes = ['/']
 const selectedAdapter = isStaticDeployment ? undefined : providers[adapterProvider] || providers.node
+const edgeOneExcludeRoutes = ['src/pages/after/[cursor].astro', 'src/pages/before/[cursor].astro', 'src/pages/posts/[id].astro', 'src/pages/search/[q].astro', 'src/pages/sitemap/[cursor].xml.js', 'src/pages/static/[...url].js']
 
 // https://astro.build/config
 export default defineConfig({
@@ -39,9 +41,11 @@ export default defineConfig({
         build: {
           assets: '_edgeone',
           outDir: 'dist/edgeone',
+          exclude: edgeOneExcludeRoutes,
         },
         prerender: {
-          default: true,
+          default: false,
+          routes: edgeOneStaticRoutes,
         },
       }
     : {}),

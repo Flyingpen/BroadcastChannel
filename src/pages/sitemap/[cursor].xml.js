@@ -1,6 +1,14 @@
 import { getChannelInfo } from '../../lib/telegram'
 
+export const getStaticPaths = () => []
+
 export async function GET(Astro) {
+  if (!Astro.params?.cursor) {
+    return new Response('', {
+      status: 204,
+    })
+  }
+
   const request = Astro.request
   const url = new URL(request.url)
   const channel = await getChannelInfo(Astro, {
@@ -8,12 +16,14 @@ export async function GET(Astro) {
   })
   const posts = channel.posts || []
 
-  const xmlUrls = posts.map(post => `
+  const xmlUrls = posts
+    .map(post => `
     <url>
       <loc>${url.origin}/posts/${post.id}</loc>
       <lastmod>${new Date(post.datetime).toISOString()}</lastmod>
     </url>
-  `).join('')
+  `)
+    .join('')
 
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

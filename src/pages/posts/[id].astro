@@ -4,22 +4,34 @@ import voidFile from '../../assets/void.png'
 import List from '../../components/list.astro'
 import { getChannelInfo } from '../../lib/telegram'
 
-const { SITE_URL } = Astro.locals
+export const getStaticPaths = () => []
 
-const channelInfo = await getChannelInfo(Astro)
-
-const post = await getChannelInfo(Astro, {
-  type: 'post',
-  id: Astro.params.id,
-})
-
-const channel = {
-  ...(channelInfo || {}),
-  posts: [post],
-  seo: post,
-}
-
+const { SITE_URL: siteUrlFromLocals } = Astro.locals ?? { SITE_URL: '/' }
+const siteUrl = siteUrlFromLocals || '/'
 const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
+
+const channelInfo = Astro.params?.id ? await getChannelInfo(Astro) : null
+const post = Astro.params?.id
+  ? await getChannelInfo(Astro, {
+      type: 'post',
+      id: Astro.params.id,
+    })
+  : null
+
+const channel =
+  post && channelInfo
+    ? {
+        ...(channelInfo || {}),
+        posts: [post],
+        seo: post,
+      }
+    : {
+        ...(channelInfo || {}),
+        posts: [],
+        seo: {
+          noindex: true,
+        },
+      }
 ---
 
 <List channel={channel} before={false} after={false} isItem={true}>
@@ -31,7 +43,7 @@ const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
       class="breadcrumb-avatar"
     />
     <div class="breadcrumb-title">
-      <a href={SITE_URL} class="site-title" title={channel?.title}>
+      <a href={siteUrl} class="site-title" title={channel?.title}>
         {channel.title}
       </a>
     </div>

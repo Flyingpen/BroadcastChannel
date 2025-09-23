@@ -2,14 +2,28 @@
 import List from '../../components/list.astro'
 import { getChannelInfo } from '../../lib/telegram'
 
-const q = Astro.url.searchParams.get('q') || Astro.params.q
-const channel = await getChannelInfo(Astro, {
-  q,
-})
+export const getStaticPaths = () => []
 
-channel.seo = {
-  title: `${q}`,
+const query = Astro.params?.q ? decodeURIComponent(Astro.params.q) : ''
+
+let channel = {
+  posts: [],
+  seo: {
+    title: query ? `Search: ${query}` : 'Search',
+    noindex: true,
+  },
+}
+
+if (query) {
+  channel = await getChannelInfo(Astro, {
+    q: query,
+  })
+
+  channel.seo = {
+    title: `Search: ${query}`,
+    noindex: true,
+  }
 }
 ---
 
-<List channel={channel} before={false} after={false} />
+<List channel={channel} />
