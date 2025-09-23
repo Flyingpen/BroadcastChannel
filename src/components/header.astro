@@ -1,5 +1,5 @@
 ---
-import { getEnv } from '../lib/env'
+import { getConfig } from '../lib/config'
 import voidFile from '../assets/void.png'
 import rss from '../assets/rss.svg'
 import podcast from '../assets/podcast.svg'
@@ -14,118 +14,183 @@ import ThemeToggle from './ThemeToggle.astro'
 const { SITE_URL, RSS_URL } = Astro.locals
 const { channel } = Astro.props
 
-const PODCASRT = getEnv(import.meta.env, Astro, 'PODCASRT')
-const TWITTER = getEnv(import.meta.env, Astro, 'TWITTER')
-const GITHUB = getEnv(import.meta.env, Astro, 'GITHUB')
-const TELEGRAM = getEnv(import.meta.env, Astro, 'TELEGRAM')
-const DISCORD = getEnv(import.meta.env, Astro, 'DISCORD')
-const MASTODON = getEnv(import.meta.env, Astro, 'MASTODON')
-const BLUESKY = getEnv(import.meta.env, Astro, 'BLUESKY')
+const locale = getConfig(import.meta.env, Astro, 'LOCALE', 'zh-CN')
+const PODCAST = getConfig(import.meta.env, Astro, 'PODCAST')
+const TWITTER = getConfig(import.meta.env, Astro, 'TWITTER')
+const GITHUB = getConfig(import.meta.env, Astro, 'GITHUB')
+const TELEGRAM = getConfig(import.meta.env, Astro, 'TELEGRAM')
+const DISCORD = getConfig(import.meta.env, Astro, 'DISCORD')
+const MASTODON = getConfig(import.meta.env, Astro, 'MASTODON')
+const BLUESKY = getConfig(import.meta.env, Astro, 'BLUESKY')
 
-const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
+const staticProxy = getConfig(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
+
+const posts = channel?.posts ?? []
+let lastUpdated = ''
+if (posts.length > 0) {
+  const latestPost = posts[posts.length - 1] ?? posts[0]
+  if (latestPost?.datetime) {
+    try {
+      lastUpdated = new Intl.DateTimeFormat(locale || 'zh-CN', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }).format(new Date(latestPost.datetime))
+    } catch {
+      lastUpdated = new Date(latestPost.datetime).toLocaleString()
+    }
+  }
+}
 ---
 
-<div id="header">
-  <a href={SITE_URL} title={channel?.title}>
-    <img
-      src={channel?.avatar?.startsWith('http') ? staticProxy + channel?.avatar : voidFile.src}
-      alt={channel?.title}
-      loading="eager"
-      class="header-avatar"
-    />
-  </a>
-  <div class="header-title">
-    <a href={SITE_URL} class="site-title" title={channel?.title}>
-      {channel?.title}
-    </a>
+<section class="glass-panel overflow-hidden p-0">
+  <div class="relative">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,95,31,0.18),transparent_60%),radial-gradient(circle_at_20%_80%,rgba(59,130,246,0.15),transparent_55%)]"
+    >
+    </div>
+    <div class="relative flex flex-col gap-6 p-6 sm:p-8 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-4 md:gap-6">
+        <div class="relative inline-flex shrink-0">
+          <span
+            class="absolute inset-0 scale-[1.05] rounded-3xl bg-gradient-to-tr from-brand-400/30 to-transparent blur-xl"
+          ></span>
+          <img
+            src={channel?.avatar?.startsWith('http') ? staticProxy + channel?.avatar : voidFile.src}
+            alt={channel?.title}
+            loading="eager"
+            class="relative h-20 w-20 rounded-3xl border border-white/30 object-cover shadow-soft transition hover:scale-[1.02] sm:h-24 sm:w-24"
+          />
+        </div>
+        <div class="space-y-3">
+          <a
+            href={SITE_URL}
+            class="inline-flex items-center gap-3 text-2xl font-semibold tracking-tight text-surface-900 transition hover:text-brand-500 dark:text-white"
+          >
+            {channel?.title}
+          </a>
+          {
+            lastUpdated && (
+              <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/70 px-3 py-1 text-xs font-medium text-slate-500 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-300">
+                <span>更新于</span>
+                <span class="font-semibold text-brand-500">{lastUpdated}</span>
+              </div>
+            )
+          }
+          {
+            channel?.descriptionHTML && channel?.descriptionHTML.length > 0 && (
+              <div
+                class="rich-content prose-sm max-w-none text-slate-600 dark:text-slate-300"
+                set:html={channel?.descriptionHTML}
+              />
+            )
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-end gap-3">
+        <ThemeToggle />
+        <a
+          href={RSS_URL}
+          target="_blank"
+          rel="alternate"
+          type="application/rss+xml"
+          title="订阅 RSS"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+        >
+          <img {...rss} alt="RSS 订阅" class="h-5 w-5" />
+        </a>
+
+        {
+          PODCAST && (
+            <a
+              href={PODCAST}
+              target="_blank"
+              title="播客订阅"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...podcast} alt="播客" class="h-5 w-5" />
+            </a>
+          )
+        }
+
+        {
+          TWITTER && TWITTER.length > 0 && (
+            <a
+              href={`https://twitter.com/${TWITTER}`}
+              title="访问 Twitter"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...twitter} alt={`twitter.com/${TWITTER}`} class="h-5 w-5" />
+            </a>
+          )
+        }
+
+        {
+          GITHUB && GITHUB.length > 0 && (
+            <a
+              href={`https://github.com/${GITHUB}`}
+              title="访问 GitHub"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...github} alt={`github.com/${GITHUB}`} class="h-5 w-5" />
+            </a>
+          )
+        }
+
+        {
+          TELEGRAM && TELEGRAM.length > 0 && (
+            <a
+              href={`https://t.me/${TELEGRAM}`}
+              title="访问 Telegram"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...telegram} alt={`t.me/${TELEGRAM}`} class="h-5 w-5" />
+            </a>
+          )
+        }
+
+        {
+          DISCORD && DISCORD.length > 0 && (
+            <a
+              href={DISCORD}
+              title="加入 Discord"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...discord} alt="Discord 邀请" class="h-5 w-5" />
+            </a>
+          )
+        }
+
+        {
+          MASTODON && MASTODON.length > 0 && (
+            <a
+              href={`https://${MASTODON}`}
+              title="访问 Mastodon"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...mastodon} alt={`@${MASTODON}`} class="h-5 w-5" />
+            </a>
+          )
+        }
+
+        {
+          BLUESKY && BLUESKY.length > 0 && (
+            <a
+              href={`https://bsky.app/profile/${BLUESKY}`}
+              title="访问 Bluesky"
+              target="_blank"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70"
+            >
+              <img {...bluesky} alt={`@${BLUESKY}`} class="h-5 w-5" />
+            </a>
+          )
+        }
+      </div>
+    </div>
   </div>
-  <div class="header-icons">
-    <ThemeToggle />
-    <a href={RSS_URL} target="_blank" rel="alternate" type="application/rss+xml" title="RSS Feed">
-      <img {...rss} alt="RSS" class="social-icon" width="1em" />
-    </a>
-
-    {
-      PODCASRT && (
-        <a href={PODCASRT} target="_blank" title="Podcast">
-          <img {...podcast} alt="Podcast" class="social-icon" width="1em" />
-        </a>
-      )
-    }
-
-    {
-      TWITTER && TWITTER.length > 0 && (
-        <a href={`https://twitter.com/${TWITTER}`} title="Twitter" target="_blank">
-          <img {...twitter} alt={`twitter.com/${TWITTER}`} class="social-icon" width="1em" />
-        </a>
-      )
-    }
-
-    {
-      GITHUB && GITHUB.length > 0 && (
-        <a href={`https://github.com/${GITHUB}`} title="GitHub" target="_blank">
-          <img {...github} alt={`github.com/${GITHUB}`} class="social-icon" width="1em" />
-        </a>
-      )
-    }
-
-    {
-      TELEGRAM && TELEGRAM.length > 0 && (
-        <a href={`https://t.me/${TELEGRAM}`} title="Telegram" target="_blank">
-          <img {...telegram} alt={`t.me/${TELEGRAM}`} class="social-icon" width="1em" />
-        </a>
-      )
-    }
-
-    {
-      DISCORD && DISCORD.length > 0 && (
-        <a href={DISCORD} title="Discord" target="_blank">
-          <img {...discord} alt="Discord Invite" class="social-icon" width="1em" />
-        </a>
-      )
-    }
-
-    {
-      MASTODON && MASTODON.length > 0 && (
-        <a href={`https://${MASTODON}`} title="Mastodon" target="_blank">
-          <img {...mastodon} alt={`@${MASTODON}`} class="social-icon" width="1em" />
-        </a>
-      )
-    }
-
-    {
-      BLUESKY && BLUESKY.length > 0 && (
-        <a href={`https://bsky.app/profile/${BLUESKY}`} title="BlueSky" target="_blank">
-          <img {...bluesky} alt={`@${BLUESKY}`} class="social-icon" width="1em" />
-        </a>
-      )
-    }
-  </div>
-</div>
-
-{
-  channel?.descriptionHTML && channel?.descriptionHTML.length > 0 && (
-    <div class="text-box" id="site-intro" set:html={channel?.descriptionHTML} />
-  )
-}
-
-<style>
-  #site-intro {
-    color: var(--secondary-color);
-    background-color: var(--code-background-color);
-    word-break: break-word;
-
-    & :global(.emoji) {
-      font-style: normal;
-      margin-right: 2px;
-    }
-  }
-
-  .social-icon {
-    padding: 4px;
-  }
-
-  .header-icons {
-    gap: 2px;
-  }
-</style>
+</section>

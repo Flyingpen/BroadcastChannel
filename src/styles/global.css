@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    @apply font-body bg-surface-50 text-surface-900;
+  }
+
+  html[data-theme='dark'] {
+    color-scheme: dark;
+    @apply bg-surface-950 text-slate-100;
+  }
+
+  body {
+    @apply min-h-screen bg-transparent antialiased;
+  }
+
+  a {
+    @apply text-brand-500 transition-colors duration-200 hover:text-brand-400;
+  }
+}
+
+@layer components {
+  #back-to-top {
+    @apply fixed bottom-6 right-6 hidden h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-white/80 text-brand-500 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-glow dark:border-white/10 dark:bg-surface-900/80 dark:text-brand-200;
+    z-index: 1000;
+  }
+
+  #back-to-top img {
+    @apply h-5 w-5;
+  }
+
+  @supports (animation-timeline: view()) {
+    #back-to-top {
+      display: flex;
+      animation: fade-in 0.5s linear both;
+      animation-timeline: view(block 0 120vh);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .glass-panel {
+    @apply rounded-3xl border border-white/20 bg-white/80 p-8 shadow-soft backdrop-blur-xl transition-shadow duration-500 hover:shadow-glow;
+  }
+
+  html[data-theme='dark'] .glass-panel {
+    @apply border-white/10 bg-surface-900/70;
+  }
+
+  .rich-content {
+    @apply prose prose-slate max-w-none text-base leading-relaxed;
+  }
+
+  html[data-theme='dark'] .rich-content {
+    @apply prose-invert;
+  }
+
+  .rich-content pre {
+    @apply rounded-2xl bg-surface-900/90 px-4 py-3 text-sm text-slate-100 shadow-inner;
+  }
+
+  .rich-content code {
+    @apply rounded-md bg-surface-900/70 px-2 py-0.5 text-brand-400;
+  }
+
+  .rich-content a {
+    @apply text-brand-500 underline decoration-dashed underline-offset-4 transition-colors duration-200 hover:text-brand-400;
+  }
+
+  .rich-content blockquote {
+    @apply border-l-4 border-brand-400/60 bg-brand-400/5 px-6 py-3 text-sm italic text-surface-900 shadow-none;
+  }
+
+  html[data-theme='dark'] .rich-content blockquote {
+    @apply text-slate-100;
+  }
+
+  .rich-content img,
+  .rich-content video,
+  .rich-content iframe {
+    @apply my-6 w-full max-w-full rounded-3xl border border-white/10 shadow-soft;
+  }
+
+  .tgme_widget_message_link_preview {
+    @apply mt-5 overflow-hidden rounded-3xl border border-white/10 bg-white/80 p-6 shadow-soft transition hover:border-brand-400/40 hover:shadow-glow;
+  }
+
+  html[data-theme='dark'] .tgme_widget_message_link_preview {
+    @apply border-white/10 bg-surface-900/70;
+  }
+
+  .tgme_widget_message_link_preview .link_preview_title {
+    @apply mb-1 text-base font-semibold text-surface-900;
+  }
+
+  html[data-theme='dark'] .tgme_widget_message_link_preview .link_preview_title {
+    @apply text-white;
+  }
+
+  .tgme_widget_message_link_preview .link_preview_description {
+    @apply text-sm text-slate-600;
+  }
+
+  html[data-theme='dark'] .tgme_widget_message_link_preview .link_preview_description {
+    @apply text-slate-200;
+  }
+
+  .image-list-container {
+    @apply grid gap-4 md:grid-cols-2;
+  }
+
+  .image-preview-button {
+    @apply relative block cursor-zoom-in overflow-hidden rounded-3xl border border-white/10 transition-transform duration-300 hover:scale-[1.01];
+  }
+
+  .image-preview-button img {
+    @apply w-full rounded-3xl object-cover;
+  }
+
+  .modal {
+    @apply fixed inset-0 z-[1000] hidden place-items-center bg-black/70 backdrop-blur-xl;
+  }
+
+  .modal:popover-open {
+    @apply grid;
+  }
+
+  .modal-img {
+    @apply max-h-[90vh] max-w-[90vw] rounded-3xl border border-white/20 shadow-2xl;
+  }
+
+  .spoiler-button {
+    @apply inline-flex cursor-pointer items-center gap-2 rounded-full border border-dashed border-brand-400/50 bg-brand-400/10 px-4 py-1 text-sm text-brand-500 transition hover:border-brand-400 hover:bg-brand-400/20;
+  }
+
+  .spoiler-button input {
+    @apply hidden;
+  }
+
+  .spoiler-button tg-spoiler {
+    @apply font-semibold tracking-wide text-transparent;
+    background: repeating-conic-gradient(#999 0% 0.0001%, transparent 0.0001% 0.0002%);
+    @apply rounded-md px-1;
+  }
+
+  .spoiler-button input:checked + tg-spoiler {
+    @apply text-surface-900;
+    background: transparent;
+  }
+
+  html[data-theme='dark'] .spoiler-button input:checked + tg-spoiler {
+    @apply text-white;
+  }
+}

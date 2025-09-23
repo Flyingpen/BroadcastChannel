@@ -7,29 +7,51 @@ import { getEnv } from '../lib/env'
 const channel = await getChannelInfo(Astro)
 
 channel.seo = {
-  title: 'Tags',
+  title: '标签',
 }
 
-const tags = (getEnv(import.meta.env, Astro, 'TAGS') || '').split(',')
+const tags = (getEnv(import.meta.env, Astro, 'TAGS') || '')
+  .split(',')
+  .map((tag) => tag.trim())
+  .filter(Boolean)
 ---
 
-<Layout channel={channel} id="main-container">
+<Layout channel={channel}>
   <slot name="header">
     <Header channel={channel} />
   </slot>
 
-  <div class="section-title">Tags</div>
+  <section class="glass-panel space-y-6">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-surface-900 dark:text-white">标签索引</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-300">快速查看频道中提及的主题标签。</p>
+      </div>
+      <span
+        class="rounded-full border border-white/30 bg-white/70 px-4 py-1 text-xs font-semibold text-slate-500 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-300"
+      >
+        共 {tags.length} 个标签
+      </span>
+    </div>
 
-  <div class="tag-cloud">
     {
-      tags.map((tag: string) => (
-        <div class="tag-cloud-item">
-          <a href={`/search/%23${tag}`} class="tag">
-            {tag}
-          </a>
-          {/* <span class="tag-cloud-item-count">0</span> */}
+      tags.length === 0 ? (
+        <p class="rounded-3xl border border-dashed border-white/30 px-6 py-5 text-sm text-slate-500 dark:border-white/10 dark:text-slate-400">
+          暂未配置标签，请在环境变量 TAGS 中以逗号分隔填写标签后再访问此页面。
+        </p>
+      ) : (
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {tags.map((tag) => (
+            <a
+              href={`/search/%23${tag}`}
+              class="group flex items-center justify-between gap-2 rounded-2xl border border-white/30 bg-white/80 px-5 py-4 text-sm font-medium text-surface-900 shadow-inner transition hover:-translate-y-1 hover:border-brand-400 hover:text-brand-400 dark:border-white/10 dark:bg-surface-900/70 dark:text-slate-200"
+            >
+              <span>#{tag}</span>
+              <span class="text-xs font-semibold text-brand-500 transition group-hover:translate-x-px">→</span>
+            </a>
+          ))}
         </div>
-      ))
+      )
     }
-  </div>
+  </section>
 </Layout>

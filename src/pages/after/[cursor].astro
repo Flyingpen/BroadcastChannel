@@ -2,12 +2,23 @@
 import List from '../../components/list.astro'
 import { getChannelInfo } from '../../lib/telegram'
 
-const channel = await getChannelInfo(Astro, {
-  after: Astro.params.cursor,
-})
+export const getStaticPaths = () => []
 
-channel.seo = {
-  noindex: true,
+let channel = {
+  posts: [],
+  seo: {
+    noindex: true,
+  },
+}
+
+if (Astro.params?.cursor) {
+  channel = await getChannelInfo(Astro, {
+    after: Astro.params.cursor,
+  })
+
+  channel.seo = {
+    noindex: true,
+  }
 }
 ---
 

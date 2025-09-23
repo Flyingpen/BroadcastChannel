@@ -3,125 +3,73 @@ import moonIcon from '../assets/moon.svg'
 import sunIcon from '../assets/sun.svg'
 ---
 
-<button id="theme-toggle" class="theme-toggle" aria-label="切换主题" title="切换主题">
-  <img id="theme-icon-sun" src={sunIcon.src} alt="明亮模式" class="theme-icon" />
-  <img id="theme-icon-moon" src={moonIcon.src} alt="暗色模式" class="theme-icon" />
+<button
+  id="theme-toggle"
+  class="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/20 bg-white/70 text-brand-500 shadow-inner transition hover:-translate-y-0.5 hover:border-brand-400 hover:text-brand-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 dark:border-white/10 dark:bg-surface-900/70"
+  aria-label="切换主题"
+  title="切换主题"
+>
+  <img id="theme-icon-sun" src={sunIcon.src} alt="明亮模式" class="h-5 w-5 transition duration-200" />
+  <img id="theme-icon-moon" src={moonIcon.src} alt="暗色模式" class="hidden h-5 w-5 transition duration-200" />
 </button>
 
-<script>
-  // 主题切换逻辑
-  class ThemeToggle {
-    constructor() {
-      this.button = document.getElementById('theme-toggle')
-      this.sunIcon = document.getElementById('theme-icon-sun')
-      this.moonIcon = document.getElementById('theme-icon-moon')
+<script is:inline>
+  const THEME_KEY = 'theme'
+  const doc = document.documentElement
 
-      this.init()
+  function applyTheme(theme) {
+    doc.setAttribute('data-theme', theme)
+    const sunIcon = document.getElementById('theme-icon-sun')
+    const moonIcon = document.getElementById('theme-icon-moon')
+    if (!sunIcon || !moonIcon) {
+      return
     }
 
-    init() {
-      // 从localStorage获取保存的主题，或根据系统偏好设置默认主题
-      const savedTheme = localStorage.getItem('theme')
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-      const currentTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light')
-
-      this.setTheme(currentTheme)
-      this.updateIcon(currentTheme)
-
-      // 绑定点击事件
-      this.button?.addEventListener('click', () => this.toggleTheme())
-
-      // 监听系统主题变化
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-          const newTheme = e.matches ? 'dark' : 'light'
-          this.setTheme(newTheme)
-          this.updateIcon(newTheme)
-        }
-      })
-    }
-
-    setTheme(theme) {
-      if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark')
-      } else {
-        document.documentElement.removeAttribute('data-theme')
-      }
-    }
-
-    updateIcon(theme) {
-      if (theme === 'dark') {
-        this.sunIcon?.classList.remove('active')
-        this.moonIcon?.classList.add('active')
-      } else {
-        this.sunIcon?.classList.add('active')
-        this.moonIcon?.classList.remove('active')
-      }
-    }
-
-    toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme')
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
-
-      this.setTheme(newTheme)
-      this.updateIcon(newTheme)
-      localStorage.setItem('theme', newTheme)
-    }
+    sunIcon.classList.toggle('hidden', theme === 'dark')
+    moonIcon.classList.toggle('hidden', theme !== 'dark')
   }
 
-  // 初始化主题切换
-  document.addEventListener('DOMContentLoaded', () => {
-    // eslint-disable-next-line no-new
-    new ThemeToggle()
-  })
+  function getPreferredTheme() {
+    try {
+      const stored = localStorage.getItem(THEME_KEY)
+      if (stored === 'dark' || stored === 'light') {
+        return stored
+      }
+    } catch {}
 
-  // 处理 Astro 页面转换
-  document.addEventListener('astro:page-load', () => {
-    // eslint-disable-next-line no-new
-    new ThemeToggle()
-  })
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+
+  function setInitialTheme() {
+    doc.classList.add('js-theme-ready')
+    applyTheme(getPreferredTheme())
+  }
+
+  function toggleTheme() {
+    const current = doc.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+    const next = current === 'dark' ? 'light' : 'dark'
+    applyTheme(next)
+    try {
+      localStorage.setItem(THEME_KEY, next)
+    } catch {}
+  }
+
+  function setup() {
+    setInitialTheme()
+    const button = document.getElementById('theme-toggle')
+    if (!button) {
+      return
+    }
+
+    button.addEventListener('click', (event) => {
+      event.preventDefault()
+      toggleTheme()
+    })
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setup, { once: true })
+  } else {
+    setup()
+  }
 </script>
-
-<style>
-  .theme-toggle {
-    position: relative;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .theme-toggle:hover {
-    background-color: var(--code-background-color);
-  }
-
-  .theme-icon {
-    width: 16px;
-    height: 16px;
-    position: absolute;
-    transition:
-      opacity 0.2s ease,
-      transform 0.2s ease;
-    opacity: 0;
-    transform: scale(0.8);
-    filter: var(--icon-secondary-filter);
-  }
-
-  .theme-icon.active {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  /* 确保图标在不同主题下都能正确显示 */
-  [data-theme='dark'] .theme-icon {
-    filter: invert(1) var(--icon-secondary-filter);
-  }
-</style>
