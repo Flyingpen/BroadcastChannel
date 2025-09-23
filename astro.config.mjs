@@ -25,11 +25,26 @@ const providers = {
 
 const adapterProvider = process.env.SERVER_ADAPTER || provider
 const isGitHubPages = process.env.GITHUB_PAGES === 'true'
+const staticProviders = new Set(['edgeone'])
+const isEdgeOne = adapterProvider === 'edgeone'
+const isStaticDeployment = isGitHubPages || staticProviders.has(adapterProvider)
+const selectedAdapter = isStaticDeployment ? undefined : providers[adapterProvider] || providers.node
 
 // https://astro.build/config
 export default defineConfig({
-  output: isGitHubPages ? 'static' : 'server',
-  adapter: isGitHubPages ? undefined : (providers[adapterProvider] || providers.node),
+  output: isStaticDeployment ? 'static' : 'server',
+  adapter: selectedAdapter,
+  ...(isEdgeOne
+    ? {
+        build: {
+          assets: '_edgeone',
+          outDir: 'dist/edgeone',
+        },
+        prerender: {
+          default: true,
+        },
+      }
+    : {}),
   integrations: [
     tailwind({
       css: ['src/styles/global.css'],
