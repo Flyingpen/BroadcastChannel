@@ -18,7 +18,8 @@
       "Bash(lsof:*)",
       "Bash(curl -s http://localhost:4323/)",
       "Bash(npx lint-staged:*)",
-      "Bash(curl -s http://localhost:8080/debug-config)"
+      "Bash(curl -s http://localhost:8080/debug-config)",
+      "Bash(GITHUB_PAGES=true node scripts/github-pages-build.js)"
     ],
     "deny": [],
     "ask": []

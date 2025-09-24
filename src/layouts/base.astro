@@ -127,7 +127,7 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
     >
     </div>
     <div
-      class="pointer-events-none absolute bottom-[-15%] right-[-5%] -z-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_bottom,_rgba(59,130,246,0.2),_transparent_60%)] blur-3xl dark:opacity-60"
+      class="pointer-events-none absolute bottom-[-15%] right-0 -z-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_bottom,_rgba(59,130,246,0.2),_transparent_60%)] blur-3xl dark:opacity-60"
     >
     </div>
 
@@ -244,6 +244,7 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
                 >
                   Flyingpen
                 </a>
+                <a href="https://icp.gov.moe/?keyword=20259982" target="_blank">萌ICP备20259982号</a>
               </p>
             </section>
 
@@ -257,21 +258,6 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
           </div>
         </slot>
       </aside>
-    </div>
-    )) }
-
-    <input class="search-icon" name="icon" type="checkbox" placeholder={finalUIText.search} />
-    <form class="search-form" action={searchAction} method="get">
-      {GOOGLE_SEARCH_SITE ? <input type="hidden" name="as_sitesearch" value={GOOGLE_SEARCH_SITE} /> : null}
-      <input type="text" name="q" placeholder={finalUIText.search} />
-    </form>
-    <div class="copyright-wrap">
-      {finalUIText.poweredBy}
-      <a href="https://github.com/ccbikai/BroadcastChannel" title="BroadcastChannel" target="_blank" rel="noopener">
-        BroadcastChannel
-      </a> &
-      <a href="https://github.com/Flyingpen" title="Flyingpen" target="_blank" rel="noopener"> Flyingpen </a>
-      <a href="https://icp.gov.moe/?keyword=20259982" target="_blank">萌ICP备20259982号</a>
     </div>
 
     <a href="#page-top" id="back-to-top" aria-label="返回顶部">
