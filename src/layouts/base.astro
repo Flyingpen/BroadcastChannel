@@ -2,6 +2,7 @@
 import { SEO } from 'astro-seo'
 import { getConfig } from '../lib/config'
 import backToTopIcon from '../assets/back-to-top.svg'
+import AutoRefresh from '../components/AutoRefresh.astro'
 
 const { SITE_URL, RSS_URL, RSS_PREFIX } = Astro.locals
 const { channel } = Astro.props
@@ -117,6 +118,10 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
   <body
     id="page-top"
     class="relative overflow-x-hidden bg-transparent text-surface-900 transition-colors duration-500 selection:bg-brand-400/30 selection:text-brand-900 dark:text-slate-100"
+    data-static={import.meta.env.NODE_ENV === 'production' &&
+    (import.meta.env.GITHUB_PAGES === 'true' || import.meta.env.SERVER_ADAPTER === 'edgeone')
+      ? 'true'
+      : 'false'}
   >
     <div
       class="pointer-events-none fixed inset-0 -z-20 bg-gradient-to-br from-surface-50 via-white to-surface-200 opacity-95 dark:from-surface-950 dark:via-surface-900 dark:to-surface-900"
@@ -262,6 +267,8 @@ const navActiveClass = 'border-brand-500 bg-brand-500 text-white shadow-glow hov
     <a href="#page-top" id="back-to-top" aria-label="返回顶部">
       <img {...backToTopIcon} alt="返回顶部" />
     </a>
+
+    <AutoRefresh />
 
     {customJS && <script is:inline set:html={customJS} />}
   </body>

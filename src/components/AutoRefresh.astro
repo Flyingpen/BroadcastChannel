@@ -1,0 +1,201 @@
+---
+// 自动刷新组件，用于静态部署时实现内容更新
+const { SITE_URL } = Astro.locals
+const isProduction = import.meta.env.NODE_ENV === 'production'
+const isGitHubPages = import.meta.env.GITHUB_PAGES === 'true'
+const isEdgeOne = import.meta.env.SERVER_ADAPTER === 'edgeone'
+const isStaticDeployment = isProduction && (isGitHubPages || isEdgeOne)
+---
+
+<script>
+  // 自动刷新逻辑，仅在静态部署时启用
+  ;(function () {
+    const refreshInterval = 300000 // 5分钟
+    const siteUrl = window.location.origin
+    let lastUpdateCheck = Date.now()
+    let isVisible = true
+
+    // 检查是否为静态部署
+    const isStatic = document.body.dataset.static === 'true'
+    if (!isStatic) {
+      return
+    }
+
+    // 页面可见性检测
+    document.addEventListener('visibilitychange', () => {
+      isVisible = !document.hidden
+      if (isVisible && Date.now() - lastUpdateCheck > refreshInterval) {
+        checkForUpdates()
+      }
+    })
+
+    // 检查更新函数
+    async function checkForUpdates() {
+      try {
+        // 通过 RSS feed 检查是否有新内容
+        const response = await fetch(`${siteUrl}/rss.xml?_t=${Date.now()}`, {
+          cache: 'no-cache',
+        })
+
+        if (response.ok) {
+          const rssContent = await response.text()
+          const parser = new DOMParser()
+          const rssDoc = parser.parseFromString(rssContent, 'application/xml')
+
+          // 获取最新文章的发布时间
+          const latestItem = rssDoc.querySelector('item pubDate')
+          if (latestItem) {
+            const latestPubDate = new Date(latestItem.textContent).getTime()
+            const storedLastUpdate = localStorage.getItem('lastContentUpdate')
+
+            if (storedLastUpdate && latestPubDate > Number.parseInt(storedLastUpdate)) {
+              // 发现新内容，显示刷新提示
+              showUpdateNotification()
+            } else if (!storedLastUpdate) {
+              // 首次访问，记录当前最新时间
+              localStorage.setItem('lastContentUpdate', latestPubDate.toString())
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to check for updates:', error)
+      }
+
+      lastUpdateCheck = Date.now()
+    }
+
+    // 显示更新通知
+    function showUpdateNotification() {
+      // 避免重复显示通知
+      if (document.getElementById('update-notification')) {
+        return
+      }
+
+      const notification = document.createElement('div')
+      notification.id = 'update-notification'
+      notification.innerHTML = `
+      <div style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff5f1f, #3b82f6);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 300px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        animation: slideIn 0.3s ease-out;
+      ">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+          "></div>
+          <div>
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">
+              发现新内容 🎉
+            </div>
+            <div style="font-size: 12px; opacity: 0.9;">
+              点击刷新页面查看最新更新
+            </div>
+          </div>
+        </div>
+        <button onclick="location.reload()" style="
+          margin-top: 12px;
+          background: rgba(255,255,255,0.2);
+          border: 1px solid rgba(255,255,255,0.3);
+          color: white;
+          padding: 8px 16px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 500;
+          transition: background 0.2s;
+          width: 100%;
+        " onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+           onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+          立即刷新
+        </button>
+        <button onclick="this.parentElement.parentElement.remove()" style="
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: none;
+          border: none;
+          color: rgba(255,255,255,0.7);
+          cursor: pointer;
+          font-size: 16px;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          transition: background 0.2s;
+        " onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+           onmouseout="this.style.background='none'">
+          ×
+        </button>
+      </div>
+    `
+
+      // 添加动画样式
+      if (!document.getElementById('update-notification-styles')) {
+        const style = document.createElement('style')
+        style.id = 'update-notification-styles'
+        style.textContent = `
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `
+        document.head.appendChild(style)
+      }
+
+      document.body.appendChild(notification)
+
+      // 5秒后自动隐藏
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.style.animation = 'slideIn 0.3s ease-out reverse'
+          setTimeout(() => notification.remove(), 300)
+        }
+      }, 5000)
+    }
+
+    // 立即检查一次，然后设置定时检查
+    setTimeout(checkForUpdates, 5000) // 页面加载5秒后首次检查
+
+    // 定期检查更新（仅在页面可见时）
+    setInterval(() => {
+      if (isVisible) {
+        checkForUpdates()
+      }
+    }, refreshInterval)
+
+    // 监听焦点事件，用户返回页面时检查更新
+    window.addEventListener('focus', () => {
+      if (Date.now() - lastUpdateCheck > 60000) {
+        // 1分钟内不重复检查
+        setTimeout(checkForUpdates, 1000)
+      }
+    })
+  })()
+</script>
