@@ -1,17 +1,17 @@
 # 广播频道
 
-**将你的 Telegram Channel 转为微博客。**
+\*_将你�?Telegram Channel 转为微博客�?_
 
 ---
 
-[English](./README.md) | 简体中文
+[English](./README.md) | 简体中�?
 
-## ✨ 特性
+## �?特�?
 
-- **将 Telegram Channel 转为微博客**
+- \*_�?Telegram Channel 转为微博�?_
 - **SEO 友好** `/sitemap.xml`
 - **浏览器端 0 JS**
-- **提供 RSS 和 RSS JSON** `/rss.xml` `/rss.json`
+- **提供 RSS �?RSS JSON** `/rss.xml` `/rss.json`
 
 ## 🪧 演示
 
@@ -40,7 +40,7 @@
 - [miyi23's Geekhub资源分享](https://gh.miyi23.top/)
 - [Magazine｜期刊杂志｜财新周刊](https://themagazine.top)
 - [Remote Jobs & Cooperation](https://share-remote-jobs.vercel.app/)
-- [甬哥侃侃侃--频道发布](https://ygkkktg.pages.dev)
+- [甬哥侃侃�?-频道发布](https://ygkkktg.pages.dev)
 - [Fugoou.log](https://fugoou.xyz)
 - [Bboysoul的博客](https://tg.bboy.app/)
 - [MakerHunter](https://share.makerhunter.com/)
@@ -55,8 +55,8 @@
 2. [Netlify](https://broadcast-channel.netlify.app/)
 3. [Vercel](https://broadcast-channel.vercel.app/)
 
-广播频道支持部署在 Cloudflare、Netlify、Vercel 等支持 Node.js SSR 的无服务器平台或者 VPS。
-具体教程见[部署你的 Astro 站点](https://docs.astro.build/zh-cn/guides/deploy/)。
+广播频道支持部署�?Cloudflare、Netlify、Vercel 等支�?Node.js SSR 的无服务器平台或�?VPS�?
+具体教程见[部署你的 Astro 站点](https://docs.astro.build/zh-cn/guides/deploy/)�?
 
 ## 🧱 技术栈
 
@@ -64,7 +64,7 @@
 - 内容管理系统：[Telegram Channels](https://telegram.org/tour/channels)
 - 模板: [Flyingpen](https://github.com/Flyingpen)
 
-## 🏗️ 部署
+## 🏗�?部署
 
 ### Docker
 
@@ -73,24 +73,19 @@
 
 ### Serverless
 
-1. [Fork](https://github.com/Flyingpen/BroadcastChannel/fork) 此项目到你 GitHub
-2. 在 Cloudflare/Netlify/Vercel 创建项目
-3. 选择 `BroadcastChannel` 项目和 `Astro` 框架
+1. [Fork](https://github.com/Flyingpen/BroadcastChannel/fork) 此项目到�?GitHub
+2. �?Cloudflare/Netlify/Vercel 创建项目
+3. 选择 `BroadcastChannel` 项目�?`Astro` 框架
 4. 配置环境变量 `CHANNEL` 为你的频道名称。此为最小化配置，更多配置见下面的配置项
-5. 保存并部署
-6. 绑定域名（可选）。
-7. 更新代码，参考 GitHub 官方文档 [从 Web UI 同步分叉分支](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork#syncing-a-fork-branch-from-the-web-ui)。
-
-#### GitHub Pages 部署
-
-1. **Fork 项目**到你?[GitHub 账号](https://github.com/Flyingpen/BroadcastChannel/fork)
-2. **配置环境变量**?
+5. 保存并部�?
+6. 绑定域名（可选）�?
+7. 更新代码，参�?GitHub 官方文档 [�?Web UI 同步分叉分支](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork#syncing-a-fork-branch-from-the-web-ui)�?
 
 ## ⚒️ 配置
 
 ``env
 
-## Telegram 频道用户名，必须配置。 t.me/ 后面那串字符
+## Telegram 频道用户名，必须配置�?t.me/ 后面那串字符
 
 CHANNEL=miantiao_me
 
@@ -99,7 +94,7 @@ CHANNEL=miantiao_me
 LOCALE=zh-cn
 TIMEZONE=Asia/Shanghai
 
-## 社交媒体用户名
+## 社交媒体用户�?
 
 TELEGRAM=your_telegram_username
 TWITTER=your_twitter_username
@@ -110,23 +105,23 @@ GITHUB=your_github_username
 DISCORD=
 PODCAST=
 
-## 头部尾部代码注入，支持 HTML
+## 头部尾部代码注入，支�?HTML
 
 FOOTER_INJECT=
 HEADER_INJECT=
 
-## SEO 配置项，可不让搜索引擎索引内容
+## SEO 配置项，可不让搜索引擎索引内�?
 
 NO_FOLLOW=false
 NO_INDEX=false
 
-## Sentry 配置项，收集服务端报错
+## Sentry 配置项，收集服务端报�?
 
 SENTRY_AUTH_TOKEN=SENTRY_AUTH_TOKEN
 SENTRY_DSN=SENTRY_DSN
 SENTRY_PROJECT=SENTRY_PROJECT
 
-## Telegram 主机名称和静态资源代理，不建议修改
+## Telegram 主机名称和静态资源代理，不建议修�?
 
 HOST=telegram.dog
 STATIC_PROXY=
@@ -135,7 +130,7 @@ STATIC_PROXY=
 
 GOOGLE_SEARCH_SITE=memo.miantiao.me
 
-## 启用标签页, 标签使用英文逗号分割
+## 启用标签�? 标签使用英文逗号分割
 
 TAGS=标签A,标签B,标签C
 
@@ -143,11 +138,11 @@ TAGS=标签A,标签B,标签C
 
 COMMENTS=true
 
-## 链接页面中的超链接, 使用英文逗号和分号分割
+## 链接页面中的超链�? 使用英文逗号和分号分�?
 
 LINKS=Title1,URL1;Title2,URL3;Title3,URL3;
 
-## 侧边栏导航项, 使用英文逗号和分号分割
+## 侧边栏导航项, 使用英文逗号和分号分�?
 
 NAVS=Title1,URL1;Title2,URL3;Title3,URL3;
 
@@ -159,14 +154,14 @@ RSS_BEAUTIFY=true
 
 ## 🙋🏻 常问问题
 
-1. 为什么部署后内容为空？
-   - 检查频道是否是公开的，必须是公开的
+1. 为什么部署后内容为空�?
+   - 检查频道是否是公开的，必须是公开�?
    - 频道用户名是字符串，不是数字
-   - 关闭频道 Restricting Saving Content 设置项
-   - 修改完环境变量后需要重新部署
-   - Telegram 会屏蔽一些敏感频道的公开展示， 可以通过访问 `https://t.me/s/频道用户名` 确认
+   - 关闭频道 Restricting Saving Content 设置�?
+   - 修改完环境变量后需要重新部�?
+   - Telegram 会屏蔽一些敏感频道的公开展示�?可以通过访问 `https://t.me/s/频道用户名` 确认
 
-## ☕ 赞助
+## �?赞助
 
-您可以选择移除此部分，或者添加您自己的赞助链接。
+您可以选择移除此部分，或者添加您自己的赞助链接�?
 ```
